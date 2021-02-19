@@ -1,0 +1,44 @@
+import pygame as pg
+import os
+
+
+class Field:
+    def __init__(self, screen_size, field_size):
+        self.hexes = {  # Массив с картинками гексов
+            'dirt': [],  # Типы гексов
+            'grass': [],
+            'mars': [],
+            'medieval': [],
+            'sand': [],
+            'stone': [],
+            'water': [],
+        }
+        files = os.listdir('gameHexPallet')  # Имена картинок
+        self.hex_size = (screen_size[0] // field_size[0], screen_size[1] // field_size[1])  # Размер гекса (120, 140)
+        for key in self.hexes:  # Перебор по типам гексов
+            count = sum((key in name) for name in files)  # Количество имен файлов, где встречается название типа гекса
+            for i in range(count):  # Перебор по номерам
+                self.hexes[key].append(
+                    pg.image.load(f'gameHexPallet/{key}_{self.int_format(i)}.png'))  # Загрузка картинок
+                self.hexes[key][-1] = pg.transform.scale(self.hexes[key][-1], self.hex_size)
+
+    # Отрисовка поля
+    def draw(self, screen):
+        w, h = self.hex_size  # Координаты гекса
+        for key in self.hexes:  # Перебор по типам гексов
+            for i in self.hexes[key]:  # Перебор по номерам
+                screen.blit(i, i.get_rect(bottomright=(w, h)))  # Отрисовка
+                w += self.hex_size[0]  # Сдвиг координат на 1 гекс
+            # Сдвиг координат на следующую строку
+            if (h % self.hex_size[1] == self.hex_size[1] // 4) or (h % self.hex_size[1] == 3 * self.hex_size[1] // 4):
+                w = self.hex_size[0]
+            else:
+                w = 3 * self.hex_size[0] // 2
+            h += 3 * self.hex_size[1] // 4
+
+    @staticmethod
+    def int_format(n: int, zn=2):
+        res = str(n)[::-1]
+        while len(res) < zn:
+            res += '0'
+        return res[::-1]
