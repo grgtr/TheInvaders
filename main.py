@@ -4,8 +4,8 @@ import os
 
 from classes import *
 
-screen_size = width, height = 1000, 800
-field_size = 15, 12
+field_size = 20, 10
+screen_size = width, height = field_size[0] * 60, field_size[1] * 70  # Отношение размера экрана как и размер гексов 6:7
 
 
 def main():
@@ -15,6 +15,7 @@ def main():
 
     # Загрузка данных
     field = Field(screen_size, field_size)
+    field.generate()
 
     while is_run:
         # Обработка событий
