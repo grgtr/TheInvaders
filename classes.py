@@ -33,9 +33,10 @@ class Field:
     def draw(self, screen):
         w, h = self.hex_size  # Координаты гекса
         line = 0  # Номер линии
-        for key in self.hexes:  # Перебор по типам гексов
-            for i in self.hexes[key]:  # Перебор по номерам
-                screen.blit(i, i.get_rect(bottomright=(w, h)))  # Отрисовка
+        for i in range(len(self.field)):  # Перебор по типам гексов
+            for j in range(len(self.field[i])):  # Перебор по номерам
+                img = self.hexes[self.field[i][j][0]][self.field[i][j][1]]
+                screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка
                 w += self.hex_size[0]  # Сдвиг координат на 1 гекс
             # Сдвиг координат на следующую строку
             if line % 2 == 1:
