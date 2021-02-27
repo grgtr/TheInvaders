@@ -2,9 +2,10 @@ import pygame as pg
 import sys
 import os
 
-from classes import *
+from field import *
+from unit import *
 
-field_size = 20, 10
+field_size = 25, 25
 screen_size = width, height = field_size[0] * 60, field_size[1] * 70  # Отношение размера экрана как и размер гексов 6:7
 
 

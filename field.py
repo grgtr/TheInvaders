@@ -46,6 +46,7 @@ class Field:
             h += 3 * self.hex_size[1] // 4
             line += 1
 
+    # Генерация поля
     def generate(self):
         # Количество гексов каждого типа
         hexes_count = self.field_size[0] * self.field_size[1] - self.field_size[1] // 2
