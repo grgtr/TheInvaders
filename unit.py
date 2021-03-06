@@ -1,10 +1,15 @@
 import pygame as pg
 import os
 
+white = (255, 255, 255)
+black = (  0,   0,   0)
+green = (0, 255, 0)
+blue = (0, 0, 180)
+red   = (255,   0,   0)
 
 # Класс игровых юнитов
 class Unit:
-    def __init__(self, hp: int, mana: int, dmg: int, moves: int, regen: int):
+    def __init__(self, hp: int, mana: int, dmg: int, moves: int, regen: int, x: int, y: int):
         self.max_hp = hp  # Максимальное количество здоровья
         self.hp = hp  # Здоровье
         self.regen = regen
@@ -15,12 +20,14 @@ class Unit:
         self.dmg = dmg  # Урон
         self.max_moves = moves  # Максимальное количество очков перемещения
         self.moves = moves  # Количество очков перемещения
-        # TO DO
+        self.x = x
+        self.y = y
+        # TODO
         # Сделать подгрузку и отображение
 
     # Отрисовка юнита
-    def draw(self):
-        pass
+    def draw(self, screen):
+        pg.draw.circle(screen, blue, (30, 35), 15, 0)
 
     # Обновление перед ходом
     def refresh(self):
@@ -52,3 +59,6 @@ class Unit:
     # Жив ли юнит
     def is_alive(self):
         return self.hp > 0
+
+    def movement(self):
+        return self.moves > 0
