@@ -5,8 +5,9 @@ import os
 from field import *
 from unit import *
 
-field_size = 25, 25
-screen_size = width, height = field_size[0] * 60, field_size[1] * 70  # Отношение размера экрана как и размер гексов 6:7
+field_size = 10, 10
+hex_size = 60, 70  # Размер гексов (6:7)
+screen_size = width, height = field_size[0] * hex_size[0], field_size[1] * hex_size[1]  # Размер экрана
 
 
 def main():
@@ -25,7 +26,7 @@ def main():
                 is_run = False
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if mouse_x - unit.x <= 60 :
+                if mouse_x - unit.x <= hex_size[0]:
                     pass
                 print(mouse_x, mouse_y)
 
