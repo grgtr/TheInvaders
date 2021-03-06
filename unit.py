@@ -28,7 +28,7 @@ class Unit:
 
     # Отрисовка юнита
     def draw(self, screen):
-        pg.draw.circle(screen, blue, (30, 35), 15, 0)
+        pg.draw.circle(screen, blue, (self.x, self.y), 15, 0)
 
     # Обновление перед ходом
     def refresh(self):
