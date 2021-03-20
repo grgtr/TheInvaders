@@ -6,9 +6,10 @@ import math
 from field import *
 from unit import *
 
-field_size = 10, 10
+field_size = 25, 15
 hex_size = 60, 70  # Размер гексов (6:7)
 screen_size = width, height = field_size[0] * hex_size[0], field_size[1] * hex_size[1]  # Размер экрана
+
 
 
 def main():
@@ -18,7 +19,9 @@ def main():
 
     # Загрузка данных
     field = Field(screen_size, field_size)
-    field.generate()
+    #field.generate()
+    field.gen_given_field()
+    print(field.field)
     unit = Unit(100, 0, 15, 2, 5, int(hex_size[0]/2), int(hex_size[1]/2))
     while is_run:
         # Обработка событий
