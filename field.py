@@ -21,7 +21,7 @@ class Field:
             'stone': [],
             'water': [],
         }
-        self.field = [[('grass', random.randint(0,7)) for _ in range(field_size[0] - 1)] for _ in range(field_size[1])]  # Массив поля
+        self.field = [[('grass', random.randint(0,6)) for _ in range(field_size[0] - 1)] for _ in range(field_size[1])]  # Массив поля
         for i in range(field_size[1] // 2):  # В нечетных строчках на 1 гекс больше
             self.field[i * 2].append(('grass', 0))
         self.field_size = field_size  # Размер поля
@@ -55,12 +55,12 @@ class Field:
     def gen_given_field(self):
           # Погексовая генерация
         for j in range(0,self.field_size[0]):
-            self.field[0][j] = 'grass', 5
+            self.field[0][j] = 'grass', 7
         #for j in range(0,self.field_size[0]-1):
         #    self.field[1][j] = 'water', 0
 
         for j in range(0,self.field_size[0] - 1):
-            self.field[self.field_size[1] - 1][j] = 'mars', 6
+            self.field[self.field_size[1] - 1][j] = 'dirt', 8
 
         if chet_hex(self.field_size[1] - 2):
             n = self.field_size[0]
@@ -68,7 +68,7 @@ class Field:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-            self.field[self.field_size[1] - 2][j] = 'mars', random.randint(0, 7)
+            self.field[self.field_size[1] - 2][j] = 'dirt', random.randint(0, 7)
 
         if chet_hex(self.field_size[1] - 3):
             n = self.field_size[0]
@@ -76,7 +76,7 @@ class Field:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-            self.field[self.field_size[1] - 3][j] = 'mars', random.randint(0, 5)
+            self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
 
         for j in range(0,self.field_size[1]):
             self.field[j][0] = 'water', 0
@@ -86,6 +86,10 @@ class Field:
                 self.field[j][self.field_size[0]-1] = 'water', 0
             else:
                 self.field[j][self.field_size[0]-2] = 'water', 0
+
+
+
+
 
 
 
