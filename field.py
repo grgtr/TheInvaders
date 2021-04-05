@@ -34,6 +34,23 @@ class Field:
                     pg.image.load(f'gameHexPallet/{key}_{self.int_format(i)}.png'))  # Загрузка картинок
                 self.hexes[key][-1] = pg.transform.scale(self.hexes[key][-1], self.hex_size)
 
+    #создание постройки на заданном поле
+    def gen_building(self, a, b, c, d, title, index, val):  # a b границы по вертикали c d границы по горизонтали
+        for con in range(val):
+            yes = False
+            while not yes:
+                i = random.randint(c, d)
+                j = random.randint(a, b)
+                name, num = self.field[j][i]
+                if name != 'medieval':
+                    yes = True
+                    self.field[j][i] = title, index
+                    if j % 2 == 0:
+                        self.field[j][24 - i] = title, index
+                    else:
+                        self.field[j][23 - i] = title, index
+
+
     # Отрисовка поля
     def draw(self, screen):
         w, h = self.hex_size  # Координаты гекса
@@ -78,18 +95,47 @@ class Field:
         for j in range(0, n):
             self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
 
-        for j in range(0,self.field_size[1]):
+        if chet_hex(self.field_size[1] - 4):
+            n = self.field_size[0]
+        else:
+            n = self.field_size[0] - 1
+
+        for j in range(0, n):
+              self.field[self.field_size[1] - 4][j] = 'dirt', random.randint(0, 5)
+
+
+        for j in range(0, self.field_size[1]):
             self.field[j][0] = 'water', 0
 
-        for j in range(0,self.field_size[1]-1):
+        for j in range(0, self.field_size[1]-1):
             if j % 2 == 0:
                 self.field[j][self.field_size[0]-1] = 'water', 0
             else:
                 self.field[j][self.field_size[0]-2] = 'water', 0
 
-
-
-
+        #создание уникального гекса(домика) с границами по вертикали горизонтали название индекс количество
+        self.gen_building(1, 5, 2, 6, 'medieval', 0, 1)
+        self.gen_building(6, 10, 2, 6, 'medieval', 0, 1)
+        self.gen_building(1, 5, 2, 6, 'medieval', 1, 1)
+        self.gen_building(1, 5, 2, 6, 'medieval', 2, 1)
+        self.gen_building(6, 10, 2, 6, 'medieval', 2, 1)
+        self.gen_building(1, 10, 2, 11, 'medieval', 3, 1)
+        self.gen_building(1, 5, 2, 11, 'medieval', 4, 1)
+        self.gen_building(6, 10, 2, 11, 'medieval', 4, 1)
+        self.gen_building(1, 5, 2, 6, 'medieval', 5, 1)
+        self.gen_building(6, 10, 2, 6, 'medieval', 5, 1)
+        self.gen_building(1, 10, 2, 11, 'medieval', 6, 1)
+        self.gen_building(1, 5, 9, 13, 'medieval', 7, 1)
+        self.gen_building(6, 10, 9, 13, 'medieval', 7, 1)
+        self.gen_building(1, 10, 2, 11, 'medieval', 8, 1)
+        self.gen_building(1, 5, 5, 9, 'medieval', 9, 1)
+        self.gen_building(6, 10, 5, 9, 'medieval', 9, 1)
+        self.gen_building(1, 5, 2, 6, 'medieval', 10, 1)
+        self.gen_building(6, 10, 2, 6, 'medieval', 10, 1)
+        self.gen_building(1, 10, 2, 13, 'medieval', 11, 2)
+        self.gen_building(11, 13, 2, 12, 'medieval', 12, 1)
+        self.gen_building(12, 13, 2, 12, 'medieval', 13, 1)
+        self.gen_building(12, 13, 2, 12, 'medieval', 14, 1)
 
 
 
