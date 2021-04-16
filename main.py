@@ -6,15 +6,13 @@ import math
 from field import *
 from unit import *
 
-field_size = 25, 15
+field_size = 25, 14
 hex_size = 60, 70  # Размер гексов (6:7)
 screen_size = width, height = field_size[0] * hex_size[0], field_size[1] * hex_size[1]  # Размер экрана
 
-
-
 def main():
     pg.init()
-    screen = pg.display.set_mode(screen_size)
+    screen = pg.display.set_mode((screen_size[0], screen_size[1]))
     is_run = True
 
     # Загрузка данных

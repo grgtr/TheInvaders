@@ -46,9 +46,9 @@ class Field:
                     yes = True
                     self.field[j][i] = title, index
                     if j % 2 == 0:
-                        self.field[j][24 - i] = title, index
+                        self.field[j][self.field_size[0] - 1 - i] = title, index
                     else:
-                        self.field[j][23 - i] = title, index
+                        self.field[j][self.field_size[0] - 2 - i] = title, index
 
 
     # Отрисовка поля
@@ -70,14 +70,22 @@ class Field:
 
     # Генерация поля
     def gen_given_field(self):
-          # Погексовая генерация
-        for j in range(0,self.field_size[0]):
-            self.field[0][j] = 'grass', 7
+        # Погексовая генерация
+        # for j in range(0,self.field_size[0]):
+        #     self.field[0][j] = 'grass', 7
         #for j in range(0,self.field_size[0]-1):
         #    self.field[1][j] = 'water', 0
 
-        for j in range(0,self.field_size[0] - 1):
-            self.field[self.field_size[1] - 1][j] = 'dirt', 8
+        # for j in range(0,self.field_size[0] - 1):
+        #     self.field[self.field_size[1] - 1][j] = 'dirt', 8
+
+        if chet_hex(self.field_size[1]-1):
+            n = self.field_size[0]
+        else:
+            n = self.field_size[0] - 1
+
+        for j in range(0, n):
+            self.field[self.field_size[1]-1][j] = 'dirt', random.randint(0, 7)
 
         if chet_hex(self.field_size[1] - 2):
             n = self.field_size[0]
@@ -85,7 +93,7 @@ class Field:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-            self.field[self.field_size[1] - 2][j] = 'dirt', random.randint(0, 7)
+            self.field[self.field_size[1] - 2][j] = 'dirt', random.randint(0, 5)
 
         if chet_hex(self.field_size[1] - 3):
             n = self.field_size[0]
@@ -93,21 +101,13 @@ class Field:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-            self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
-
-        if chet_hex(self.field_size[1] - 4):
-            n = self.field_size[0]
-        else:
-            n = self.field_size[0] - 1
-
-        for j in range(0, n):
-              self.field[self.field_size[1] - 4][j] = 'dirt', random.randint(0, 5)
+              self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
 
 
         for j in range(0, self.field_size[1]):
             self.field[j][0] = 'water', 0
 
-        for j in range(0, self.field_size[1]-1):
+        for j in range(0, self.field_size[1]):
             if j % 2 == 0:
                 self.field[j][self.field_size[0]-1] = 'water', 0
             else:
