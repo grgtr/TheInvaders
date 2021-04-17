@@ -10,7 +10,7 @@ red = (255, 0, 0)
 
 # Класс игровых юнитов
 class Unit:
-    def __init__(self, hp: int, mana: int, dmg: int, moves: int, regen: int, x: int, y: int):
+    def __init__(self, hp: int, mana: int, dmg: int, defense: int, moves: int, regen: int, x: int, y: int):
         self.max_hp = hp  # Максимальное количество здоровья
         self.hp = hp  # Здоровье
         self.regen = regen
@@ -19,6 +19,7 @@ class Unit:
         self.max_mana = mana  # Максимальное количество маны
         self.mana = 0  # Количество маны
         self.dmg = dmg  # Урон
+        self.defense = defense  # Защита
         self.max_moves = moves  # Максимальное количество очков перемещения
         self.moves = moves  # Количество очков перемещения
         self.x = x
@@ -32,7 +33,11 @@ class Unit:
 
     # Обновление перед ходом
     def refresh(self):
-        self.hp += self.regen  # Регенерация
+        # Регенерация
+        if (self.hp != self.max_hp) and ((self.hp + self.regen) <= self.max_hp):
+            self.hp += self.regen
+        elif (self.hp + self.regen) > self.max_hp:
+            self.hp = self.max_hp
         self.mana = self.max_mana  # Восстановление маны
         self.moves = self.max_moves  # Восстановление очков перемещения
 
@@ -49,6 +54,12 @@ class Unit:
             if not self.is_alive():  # Если юнит погиб
                 enemy.exp += 50 // enemy.lvl ** 0.5  # Получение противником опыта
                 enemy.check()  # Проверка на новый уровень
+
+    # Защита
+    def defend(self, protect):
+        if self.moves != 0:
+            self.defend += protect
+            self.moves = 0
 
     # Проверка на вшивость
     def check(self):
