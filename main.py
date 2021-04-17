@@ -21,17 +21,19 @@ colors = {
 
 
 # Отрисовка панели управления
-def panel_draw(size: (int, int)):
+def panel_draw(size: (int, int), screen):
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
-    panel.blit(button_draw((size[1], size[1]), 'next'), (size[0] - size[1], 0))  # Кнопка следующего хода
-    # Кнопка защиты
-    # Кнопка торговли
+    panel.blit(button_draw((size[1], size[1]), 'next', screen), (size[0] - size[1], 0))  # Кнопка следующего хода
+    panel.blit(button_draw((size[1], size[1]), 'attack', screen), (size[0] - 2*size[1], 0))  # Кнопка атаки
+    panel.blit(button_draw((size[1], size[1]), 'defense', screen), (size[0] - 3*size[1], 0))  # Кнопка защиты
+    '''panel.blit(button_draw((size[1], size[1]), 'trade'), (size[0] - 4*size[1], 0))  # Кнопка торговли
+    panel.blit(button_draw((size[1], size[1]), 'select'), (size[0] - 5*size[1], 0))  # Кнопка торговли'''
     return panel
 
 
 # Отрисовка кнопки
-def button_draw(size: (int, int), form: str):
+def button_draw(size: (int, int), form: str, screen):
     btn = pg.Surface(size)  # Поверхность кнопки
     btn.fill(colors['SaddleBrown'])  # Фоновый цвет
     pg.draw.circle(btn, colors['DarkGoldenRod'], (size[1] // 2, size[1] // 2), size[1] // 2)  # Круг
@@ -42,15 +44,22 @@ def button_draw(size: (int, int), form: str):
             [size[1] // 4 * 3, size[1] // 2],
         ])
     elif form == 'attack':
-        # img = pg.image.load(path)  # Загрузка картинки
-        # img = pg.transform.scale(img, size)  # Масштабирование
-        # screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка
-        pass
+        img = pg.image.load('buttons/attack.jpg')  # Загрузка картинки
+        img = pg.transform.scale(img, (int(size[1] / 1.4), int(size[1] / 1.5)))  # Масштабирование
+        btn.blit(img, img.get_rect(bottomright=(int(size[1] / 1.3), int(size[1] / 1.3))))  # Отрисовка
     elif form == 'defense':
-        pass
+        img = pg.image.load('buttons/defend.png')  # Загрузка картинки
+        img = pg.transform.scale(img, (int(size[1] / 1.3), int(size[1] / 1.3)))  # Масштабирование
+        btn.blit(img, img.get_rect(bottomright=(4.4*size[1], int(3.6*size[1]))))  # Отрисовка
     elif form == 'trade':
+        """img = pg.image.load(path)  # Загрузка картинки
+        img = pg.transform.scale(img, size)  # Масштабирование
+        screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка"""
         pass
     elif form == 'select':
+        """img = pg.image.load(path)  # Загрузка картинки
+        img = pg.transform.scale(img, size)  # Масштабирование
+        screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка"""
         pass
     return btn
 
@@ -123,7 +132,7 @@ def main():
 
         panel_size = (screen_size[0], 230)  # Размер панели управления
         panel_coord = (0, 750)  # Координаты панели управления
-        screen.blit(panel_draw(panel_size), panel_coord)
+        screen.blit(panel_draw(panel_size, screen), panel_coord)
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
