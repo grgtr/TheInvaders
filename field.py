@@ -2,6 +2,7 @@ import pygame as pg
 import os
 import random
 
+
 def chet_hex(y):
     if y % 2 == 0:
         return True
@@ -21,7 +22,8 @@ class Field:
             'stone': [],
             'water': [],
         }
-        self.field = [[('grass', random.randint(0,6)) for _ in range(field_size[0] - 1)] for _ in range(field_size[1])]  # Массив поля
+        self.field = [[('grass', random.randint(0, 6)) for _ in range(field_size[0] - 1)] for _ in
+                      range(field_size[1])]  # Массив поля
         for i in range(field_size[1] // 2):  # В нечетных строчках на 1 гекс больше
             self.field[i * 2].append(('grass', 0))
         self.field_size = field_size  # Размер поля
@@ -34,7 +36,7 @@ class Field:
                     pg.image.load(f'gameHexPallet/{key}_{self.int_format(i)}.png'))  # Загрузка картинок
                 self.hexes[key][-1] = pg.transform.scale(self.hexes[key][-1], self.hex_size)
 
-    #создание постройки на заданном поле
+    # создание постройки на заданном поле
     def gen_building(self, a, b, c, d, title, index, val):  # a b границы по вертикали c d границы по горизонтали
         for con in range(val):
             yes = False
@@ -49,7 +51,6 @@ class Field:
                         self.field[j][self.field_size[0] - 1 - i] = title, index
                     else:
                         self.field[j][self.field_size[0] - 2 - i] = title, index
-
 
     # Отрисовка поля
     def draw(self, screen):
@@ -73,19 +74,19 @@ class Field:
         # Погексовая генерация
         # for j in range(0,self.field_size[0]):
         #     self.field[0][j] = 'grass', 7
-        #for j in range(0,self.field_size[0]-1):
+        # for j in range(0,self.field_size[0]-1):
         #    self.field[1][j] = 'water', 0
 
         # for j in range(0,self.field_size[0] - 1):
         #     self.field[self.field_size[1] - 1][j] = 'dirt', 8
 
-        if chet_hex(self.field_size[1]-1):
+        if chet_hex(self.field_size[1] - 1):
             n = self.field_size[0]
         else:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-            self.field[self.field_size[1]-1][j] = 'dirt', random.randint(0, 7)
+            self.field[self.field_size[1] - 1][j] = 'dirt', random.randint(0, 7)
 
         if chet_hex(self.field_size[1] - 2):
             n = self.field_size[0]
@@ -101,19 +102,18 @@ class Field:
             n = self.field_size[0] - 1
 
         for j in range(0, n):
-              self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
-
+            self.field[self.field_size[1] - 3][j] = 'dirt', random.randint(0, 5)
 
         for j in range(0, self.field_size[1]):
             self.field[j][0] = 'water', 0
 
         for j in range(0, self.field_size[1]):
             if j % 2 == 0:
-                self.field[j][self.field_size[0]-1] = 'water', 0
+                self.field[j][self.field_size[0] - 1] = 'water', 0
             else:
-                self.field[j][self.field_size[0]-2] = 'water', 0
+                self.field[j][self.field_size[0] - 2] = 'water', 0
 
-        #создание уникального гекса(домика) с границами по вертикали горизонтали название индекс количество
+        # создание уникального гекса(домика) с границами по вертикали горизонтали название индекс количество
         self.gen_building(1, 5, 2, 6, 'medieval', 0, 1)
         self.gen_building(6, 10, 2, 6, 'medieval', 0, 1)
         self.gen_building(1, 5, 2, 6, 'medieval', 1, 1)
@@ -136,8 +136,6 @@ class Field:
         self.gen_building(11, 13, 2, 12, 'medieval', 12, 1)
         self.gen_building(12, 13, 2, 12, 'medieval', 13, 1)
         self.gen_building(12, 13, 2, 12, 'medieval', 14, 1)
-
-
 
     def generate(self):
         # Количество гексов каждого типа
