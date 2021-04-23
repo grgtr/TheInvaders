@@ -16,8 +16,10 @@ colors = {
     'DarkGoldenRod': (184, 134, 11),
     'Tan': (210, 180, 140),
     'SaddleBrown': (139, 69, 19),
-    'светло жёлтый':(255, 217, 73)
+    'светло жёлтый': (255, 217, 73)
 }
+move_counter = 0  # Счетчик ходов
+panel_size = (screen_size[0], 230)  # Размер панели управления
 
 
 # Отрисовка панели управления
@@ -25,8 +27,8 @@ def panel_draw(size: (int, int), screen):
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
     panel.blit(button_draw((size[1], size[1]), 'next', screen), (size[0] - size[1], 0))  # Кнопка следующего хода
-    panel.blit(button_draw((size[1], size[1]), 'attack', screen), (size[0] - 2*size[1], 0))  # Кнопка атаки
-    panel.blit(button_draw((size[1], size[1]), 'defense', screen), (size[0] - 3*size[1], 0))  # Кнопка защиты
+    panel.blit(button_draw((size[1], size[1]), 'attack', screen), (size[0] - 2 * size[1], 0))  # Кнопка атаки
+    panel.blit(button_draw((size[1], size[1]), 'defense', screen), (size[0] - 3 * size[1], 0))  # Кнопка защиты
     '''panel.blit(button_draw((size[1], size[1]), 'trade'), (size[0] - 4*size[1], 0))  # Кнопка торговли
     panel.blit(button_draw((size[1], size[1]), 'select'), (size[0] - 5*size[1], 0))  # Кнопка торговли'''
     return panel
@@ -43,14 +45,16 @@ def button_draw(size: (int, int), form: str, screen):
             [size[1] // 3, size[1] // 4 * 3],
             [size[1] // 4 * 3, size[1] // 2],
         ])
+        btn.blit(pg.font.Font(None, 20).render(f'Ход {move_counter}', True, colors['Black']),  # Отрисовка счетчика хода
+                 (size[0] // 2 - 25, size[1] - 40))
     elif form == 'attack':
-        img = pg.image.load('buttons/attack.jpg')  # Загрузка картинки
+        img = pg.image.load('buttons/attack.png')  # Загрузка картинки
         img = pg.transform.scale(img, (int(size[1] / 1.4), int(size[1] / 1.5)))  # Масштабирование
-        btn.blit(img, img.get_rect(bottomright=(int(size[1] / 1.3), int(size[1] / 1.3))))  # Отрисовка
+        btn.blit(img, img.get_rect(bottomright=(size[1] // 1.2, size[1] // 1.2)))  # Отрисовка
     elif form == 'defense':
         img = pg.image.load('buttons/defend.png')  # Загрузка картинки
         img = pg.transform.scale(img, (int(size[1] / 1.3), int(size[1] / 1.3)))  # Масштабирование
-        btn.blit(img, img.get_rect(bottomright=(4.4*size[1], int(3.6*size[1]))))  # Отрисовка
+        btn.blit(img, img.get_rect(bottomright=(4.4 * size[1], int(3.6 * size[1]))))  # Отрисовка
     elif form == 'trade':
         """img = pg.image.load(path)  # Загрузка картинки
         img = pg.transform.scale(img, size)  # Масштабирование
@@ -70,15 +74,15 @@ def main():
     is_run = True
     a = []
     player1 = Player(100, a)
-    player1.add_unit(Unit(100, 0, 15, 0, 2, 10, 1, 1))
+    player1.add_unit(Unit(100, 0, 15, 0, 2, 10, 1, 1, screen_size, field_size))
     a = []
     player2 = Player(100, a)
-    player2.add_unit(Unit(100, 0, 15, 0, 2, 10, 23, 1))
+    player2.add_unit(Unit(100, 0, 15, 0, 2, 10, 23, 1, screen_size, field_size))
     # Загрузка данных
     field = Field(screen_size, field_size)
     # field.generate()
     field.gen_given_field()
-    unit = Unit(100, 0, 15, 0 , 2, 5, int(hex_size[0] / 2), int(hex_size[1] / 2))
+    unit = Unit(100, 0, 15, 0, 2, 5, int(hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size)
     button_select_pressed = False
     while is_run:
         # Обработка событий
@@ -90,15 +94,18 @@ def main():
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
 
-                if (600 < mouse_x < 800) and ( 600 < mouse_y < 800): # нажатие на кнопку выбора
-                    button_select_pressed = not button_select_pressed
-
-                if button_select_pressed:
-                    pass
+                # Нажатие на кнопку следующего хода
+                if (panel_size[0] - panel_size[1] < mouse_x) and (screen_size[1] - panel_size[1] < mouse_y):
+                    global move_counter
+                    move_counter += 1
+                    # if move_counter % 2 == 0:
+                    #     ходит первый
+                    # else:
+                    #     ходит второй
 
                 l = int(math.sqrt(
                     (mouse_x - unit.x) ** 2 + (mouse_y - unit.y) ** 2))  # длина от центра юнита до нажатого гекса
-                if int(hex_size[1] / 2) < l < int(hex_size[1]):  # длина  соответсвует соседнему гексу из 6
+                if int(hex_size[1] / 2) < l < int(hex_size[1]):  # длина соответствует соседнему гексу из 6
                     if (mouse_x > unit.x) and (
                             -int(hex_size[1] / 2) < mouse_y - unit.y < int(hex_size[1] / 2)):  # вправо
                         unit.x += int(hex_size[0])
@@ -124,13 +131,12 @@ def main():
         screen.fill((255, 255, 255))  # Белый фон, рисуется первым!
         field.draw(screen)
         unit.draw(screen)
-        for i in range(len(player1.units)): # отображение юнитов игрока 1
+        for i in range(len(player1.units)):  # отображение юнитов игрока 1
             player1.units[i].draw(screen)
 
-        for i in range(len(player2.units)): # отображение юнитов игрока 2
+        for i in range(len(player2.units)):  # отображение юнитов игрока 2
             player2.units[i].draw(screen)
 
-        panel_size = (screen_size[0], 230)  # Размер панели управления
         panel_coord = (0, 750)  # Координаты панели управления
         screen.blit(panel_draw(panel_size, screen), panel_coord)
 

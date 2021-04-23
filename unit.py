@@ -10,7 +10,8 @@ red = (255, 0, 0)
 
 # Класс игровых юнитов
 class Unit:
-    def __init__(self, hp: int, mana: int, dmg: int, defense: int, moves: int, regen: int, x: int, y: int):
+    def __init__(self, hp: int, mana: int, dmg: int, defense: int, moves: int, regen: int,
+                 x: int, y: int, screen_size: (int, int), field_size: (int, int)):
         self.max_hp = hp  # Максимальное количество здоровья
         self.hp = hp  # Здоровье
         self.regen = regen
@@ -24,12 +25,14 @@ class Unit:
         self.moves = moves  # Количество очков перемещения
         self.x = x
         self.y = y
-        # TODO
-        # Сделать подгрузку и отображение
+        self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
+        self.hex_size = (screen_size[0] // field_size[0], screen_size[1] // field_size[1])  # Размер гекса (120, 140)
+        self.image = pg.transform.scale(self.image, self.hex_size)  # Масштабирование
 
     # Отрисовка юнита
     def draw(self, screen):
-        pg.draw.circle(screen, blue, (self.x, self.y), 15, 0)
+        screen.blit(self.image, self.image.get_rect(bottomright=(self.x + self.hex_size[1] // 2,
+                                                                 self.y + self.hex_size[0] // 2)))  # Отрисовка
 
     # Обновление перед ходом
     def refresh(self):
