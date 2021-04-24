@@ -69,14 +69,16 @@ def button_draw(size: (int, int), form: str, screen):
         img = pg.transform.scale(img, (int(size[1] / 1.4), int(size[1] / 1.5)))  # Масштабирование
         btn.blit(img, img.get_rect(bottomright=(size[1] // 1.2, size[1] // 1.2)))  # Отрисовка
     elif form == 'defense':
+        '''
         img = pg.image.load('buttons/defend.png')  # Загрузка картинки
         img = pg.transform.scale(img, (int(size[1] / 1.3), int(size[1] / 1.3)))  # Масштабирование
         btn.blit(img, img.get_rect(bottomright=(4.4 * size[1], int(3.6 * size[1]))))  # Отрисовка
-    elif form == 'trade':
-        """img = pg.image.load(path)  # Загрузка картинки
-        img = pg.transform.scale(img, size)  # Масштабирование
-        screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка"""
+        '''
         pass
+    elif form == 'trade':
+        img = pg.image.load('buttons/trade.png')  # Загрузка картинки
+        img = pg.transform.scale(img, (int(size[1] / 1.1), int(size[1] / 1.1)))  # Масштабирование
+        btn.blit(img, img.get_rect(bottomright=(0.95 * size[1], int(1.0 * size[1]))))  # Отрисовка
     elif form == 'select':
         """img = pg.image.load(path)  # Загрузка картинки
         img = pg.transform.scale(img, size)  # Масштабирование
