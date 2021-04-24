@@ -44,8 +44,8 @@ def panel_draw(size: (int, int), screen):
     panel.fill(colors['SaddleBrown'])  # Заливка фона
     panel.blit(button_draw((size[1], size[1]), 'next', screen), (size[0] - size[1], 0))  # Кнопка следующего хода
     panel.blit(button_draw((size[1], size[1]), 'attack', screen), (size[0] - 2 * size[1], 0))  # Кнопка атаки
-    panel.blit(button_draw((size[1], size[1]), 'defense', screen), (size[0] - 3 * size[1], 0))  # Кнопка защиты
-    panel.blit(button_draw((size[1], size[1]), 'defense', screen), (size[0] - 4 * size[1], 0))  # Кнопка след юнит
+    panel.blit(button_draw((size[1], size[1]), 'trade', screen), (size[0] - 3 * size[1], 0))  # Кнопка защиты
+    panel.blit(button_draw((size[1], size[1]), 'select', screen), (size[0] - 4 * size[1], 0))  # Кнопка след юнит
     '''panel.blit(button_draw((size[1], size[1]), 'trade'), (size[0] - 4*size[1], 0))  # Кнопка торговли
     panel.blit(button_draw((size[1], size[1]), 'select'), (size[0] - 5*size[1], 0))  # Кнопка торговли'''
     return panel
