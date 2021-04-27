@@ -21,22 +21,30 @@ colors = {
 move_counter = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
 
-def point_in(x,y):
-    ans = False
-    hx = 0
-    hy = 0
-    for hx in range(0,field_size[0]):
-        if not ans:
-            for hy in range(0,field_size[1]):
-                if not ans:
-                    if hy % 2 == 0:
-                        if (x < (hx + 1)*hex_size[0]) and (x > hx*hex_size[0]) and (y > int(ceil(-2/3 * x + 2/7 * hex_size[1] * (2*hx+1) + 10/7 * hex_size[1] * (y//2)))) and (y < int(ceil(-2/3 * x + 2/7 * hex_size[1] * (2*hx+1) + 10/7 * hex_size[1] * (y//2) + hex_size[1]))) and (y > int(ceil(2/3 * x + 2/7 * hex_size[1] * (2*hx-1) + 10/7 * hex_size[1] * (y//2)))) and (y < int(ceil(2/3 * x + 2/7 * hex_size[1] * (2*hx-1) + 10/7 * hex_size[1] * (y//2)))):
-                            return hx, hy
-                        ans = True
-                    elif hy % 2 == 1:
-                        if (x > hx *hex_size[0] + hex_size[0] // 2) and (x < hx *hex_size[0] + 3 * hex_size[0] // 2) and (y < int(ceil(-2/3 * x + 2/7 * hex_size[1] * (2*hx+1) + 10/7 * hex_size[1] * ((y-1)//2)))) and (y > int(ceil(-2/3 * x + 2/7 * hex_size[1] * (2*hx+1) + 10/7 * hex_size[1] * (y//2) + hex_size[1]))) and (y < int(ceil(2/3 * x + 2/7 * hex_size[1] * (2*hx-1) + 10/7 * hex_size[1] * (y//2)))) and (y > int(ceil(2/3 * x + 2/7 * hex_size[1] * (2*hx-1) + 10/7 * hex_size[1] * (y//2)))):
-                            return hx, hy
-                        ans = True
+
+def point_in(unit_x, unit_y):
+    if (unit_y - 35) % 100 == 0:
+        uhy = ((unit_y - 35) // 100)
+        uhy += uhy
+        uhx = ((unit_x - 30) // 60)
+    else:
+        uhy = ((unit_y - 85) // 100)
+        uhy += uhy + 1
+        uhx = ((unit_x - 1) // 60)
+    return uhx, uhy
+
+
+def center_hex(uhx, uhy):
+    x = 0
+    y = 0
+    if uhy % 2 == 0:
+        x = 30 + 60 * uhx
+        y = 35 + (((uhy) // 2)+1)*105
+    else:
+        x = 60 + 60 * uhx
+        y = 35 + (((uhy + 1) // 2)-1)*105
+    return x, y
+
 
 # Отрисовка панели управления
 def panel_draw(size: (int, int), screen):
@@ -126,14 +134,7 @@ def main():
                     now = 0
                 # Нажатие на кнопку следующего trade
                 if (mouse_x - 925) ** 2 + (mouse_y - 865) ** 2 < 115 ** 2:
-                    if (unit.y - 35) % 100 == 0:
-                        uhy = ((unit.y-35) // 100)
-                        uhy += uhy
-                        uhx = ((unit.x - 30) // 60)
-                    else:
-                        uhy = ((unit.y-85) // 100)
-                        uhy += uhy + 1
-                        uhx = ((unit.x - 1) // 60)
+                    uhx, uhy = point_in(unit.x, unit.y)
                     # print('unit', unit.x, unit.y)
                     # print('hex ', uhx, uhy)
                     print(field.field[uhy][uhx][0])
@@ -160,8 +161,17 @@ def main():
                         unit = player2.units[now]
                         print('now', now, len(player2.units))
 
-
-
+                uhx, uhy = point_in(unit.x, unit.y)
+                # по часовой
+                centres = [(uhx-1, uhy-1), (uhx, uhy-1), (uhx+1, uhy), (uhx, uhy+1), (uhx-1, uhy+1), (uhx-1, uhy)]
+                stop = True
+                l = 0
+                while stop:
+                    x, y = center_hex(centres[l])
+                    if (mouse_x - x)**2+(mouse_y-y)**2 < 30**2:
+                        stop = False
+                    l += 1
+                #if (mouse_x - c)
                 l = int(math.sqrt(
                     (mouse_x - unit.x) ** 2 + (mouse_y - unit.y) ** 2))  # длина от центра юнита до нажатого гекса
                 if int(hex_size[1] / 2) < l < int(hex_size[1]):  # длина соответствует соседнему гексу из 6
