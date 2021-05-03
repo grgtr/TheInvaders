@@ -39,10 +39,10 @@ def center_hex(uhx, uhy):
     y = 0
     if uhy % 2 == 0:
         x = 30 + 60 * uhx
-        y = 35 + (((uhy) // 2)+1)*105
+        y = 35 + (((uhy) // 2) + 1) * 105
     else:
         x = 60 + 60 * uhx
-        y = 35 + (((uhy + 1) // 2)-1)*105
+        y = 35 + (((uhy + 1) // 2) - 1) * 105
     return x, y
 
 
@@ -50,10 +50,10 @@ def center_hex(uhx, uhy):
 def panel_draw(size: (int, int), screen):
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
-    panel.blit(button_draw((size[1], size[1]), 'next', screen), (size[0] - size[1], 0))  # Кнопка следующего хода
-    panel.blit(button_draw((size[1], size[1]), 'attack', screen), (size[0] - 2 * size[1], 0))  # Кнопка атаки
-    panel.blit(button_draw((size[1], size[1]), 'trade', screen), (size[0] - 3 * size[1], 0))  # Кнопка защиты
-    panel.blit(button_draw((size[1], size[1]), 'select', screen), (size[0] - 4 * size[1], 0))  # Кнопка след юнит
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'next', screen), (size[0] - size[1] / 2, size[1] / 2))  # Кнопка следующего хода
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'attack', screen), (size[0] - size[1], size[1] / 2))  # Кнопка атаки
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'trade', screen), (size[0] - size[1] / 2, 0))  # Кнопка защиты
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'select', screen), (size[0] - size[1], 0))  # Кнопка след юнит
     '''panel.blit(button_draw((size[1], size[1]), 'trade'), (size[0] - 4*size[1], 0))  # Кнопка торговли
     panel.blit(button_draw((size[1], size[1]), 'select'), (size[0] - 5*size[1], 0))  # Кнопка торговли'''
     return panel
@@ -101,15 +101,18 @@ def main():
     is_run = True
     a = []
     player1 = Player(100, a)
-    player1.add_unit(Unit(100, 0, 15, 0, 2, 10, int(3*hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
+    player1.add_unit(
+        Unit(100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
     a = []
     player2 = Player(100, a)
-    player2.add_unit(Unit(100, 0, 15, 0, 2, 10, int(24*hex_size[0]- hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
+    player2.add_unit(
+        Unit(100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2), int(hex_size[1] / 2), screen_size,
+             field_size))
     # Загрузка данных
     field = Field(screen_size, field_size)
     # field.generate()
     field.gen_given_field()
-    #unit = Unit(100, 0, 15, 0, 2, 5, int(3*hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size)
+    # unit = Unit(100, 0, 15, 0, 2, 5, int(3*hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size)
     button_select_pressed = False
     now = 0
     while is_run:
@@ -140,12 +143,15 @@ def main():
                     print(field.field[uhy][uhx][0])
                     if field.field[uhy][uhx][0] == 'medieval':
                         if move_counter % 2 == 0:
-                            player1.add_unit(Unit(100, 0, 15, 0, 2, 10, int(3*hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
+                            player1.add_unit(
+                                Unit(100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2), int(hex_size[1] / 2), screen_size,
+                                     field_size))
                         else:
-                            player2.add_unit(Unit(100, 0, 15, 0, 2, 10, int(24*hex_size[0]- hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
+                            player2.add_unit(Unit(100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2),
+                                                  int(hex_size[1] / 2), screen_size, field_size))
 
                 # Нажатие на кнопку следующего unit
-                if (mouse_x - 695)**2 + (mouse_y-865)**2 < 115**2:
+                if (mouse_x - 695) ** 2 + (mouse_y - 865) ** 2 < 115 ** 2:
                     if move_counter % 2 == 0:
                         if now + 1 == len(player1.units):
                             now = 0
@@ -163,15 +169,16 @@ def main():
 
                 uhx, uhy = point_in(unit.x, unit.y)
                 # по часовой
-                centres = [(uhx-1, uhy-1), (uhx, uhy-1), (uhx+1, uhy), (uhx, uhy+1), (uhx-1, uhy+1), (uhx-1, uhy)]
+                centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1), (uhx - 1, uhy + 1),
+                           (uhx - 1, uhy)]
                 stop = True
                 l = 0
                 while stop:
                     x, y = center_hex(centres[l])
-                    if (mouse_x - x)**2+(mouse_y-y)**2 < 30**2:
+                    if (mouse_x - x) ** 2 + (mouse_y - y) ** 2 < 30 ** 2:
                         stop = False
                     l += 1
-                #if (mouse_x - c)
+                # if (mouse_x - c)
                 l = int(math.sqrt(
                     (mouse_x - unit.x) ** 2 + (mouse_y - unit.y) ** 2))  # длина от центра юнита до нажатого гекса
                 if int(hex_size[1] / 2) < l < int(hex_size[1]):  # длина соответствует соседнему гексу из 6
@@ -182,16 +189,16 @@ def main():
                             -int(hex_size[1] / 2) < mouse_y - unit.y < int(hex_size[1] / 2)):  # влево
                         unit.x -= int(hex_size[0])
                     elif (0 < mouse_x - unit.x < int(hex_size[0] / 2)) and (mouse_y > unit.y):  # вправо вниз
-                        unit.y += int(ceil(5/7*hex_size[1]))
+                        unit.y += int(ceil(5 / 7 * hex_size[1]))
                         unit.x += int(hex_size[0] / 2)
                     elif (0 < unit.x - mouse_x < int(hex_size[0] / 2)) and (mouse_y > unit.y):  # влево вниз
-                        unit.y += int(ceil(5/7*hex_size[1]))
+                        unit.y += int(ceil(5 / 7 * hex_size[1]))
                         unit.x -= int(hex_size[0] / 2)
                     elif (0 < unit.x - mouse_x < int(hex_size[0] / 2)) and (mouse_y < unit.y):  # влево вверх
-                        unit.y -= int(ceil(5/7*hex_size[1]))
+                        unit.y -= int(ceil(5 / 7 * hex_size[1]))
                         unit.x -= int(hex_size[0] / 2)
                     elif (0 < mouse_x - unit.x < int(hex_size[0] / 2)) and (mouse_y < unit.y):  # вправо вверх
-                        unit.y -= int(ceil(5/7*hex_size[1]))
+                        unit.y -= int(ceil(5 / 7 * hex_size[1]))
                         unit.x += int(hex_size[0] / 2)
                     print('unit', unit.x, unit.y)
 
@@ -200,7 +207,7 @@ def main():
         # Отрисовка кадра
         screen.fill((255, 255, 255))  # Белый фон, рисуется первым!
         field.draw(screen)
-        #unit.draw(screen)
+        # unit.draw(screen)
         for i in range(len(player1.units)):  # отображение юнитов игрока 1
             player1.units[i].draw(screen)
 
