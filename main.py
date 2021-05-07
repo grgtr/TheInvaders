@@ -5,6 +5,7 @@ import math
 from math import ceil
 from field import *
 from unit import *
+from building import *
 from player import *
 
 field_size = 25, 14
@@ -189,6 +190,7 @@ def main():
     screen = pg.display.set_mode((screen_size[0], screen_size[1]))
     is_run = True
     a = []
+    b = []
     med_bld = ['Небольшая мельница.Приносит 5 золота в ход.', 'Изящная арка',
                'Кузница позволяет улучшать оружие и броню.', 'Таверна.Ускоренная регенирация +10 hp',
                'Старое Кладбище.Купите карту, чтобы найти сокровище', 'Ферма.Приносит 10 золота в ход',
@@ -198,11 +200,12 @@ def main():
                'Королевский замок.Приносит 15 золота в ход,можно нанимать войска',
                'Сокровище. 50 золота , +5 к силе оружия', 'Золотой рудник.Приносит 20 золота в ход',
                'Башня магов.Можно нанять магов за золото и очки знаменитости', 'Лагерь разбойников']
-    player1 = Player(100, a)
+    player1 = Player(100, a, b)
     player1.add_unit(
         Unit(100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
     a = []
-    player2 = Player(100, a)
+    b = []
+    player2 = Player(100, a, b)
     player2.add_unit(
         Unit(100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2), int(hex_size[1] / 2), screen_size,
              field_size))
@@ -233,8 +236,11 @@ def main():
                 is_run = False
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                mhx, mhy = mouse_in(mouse_x, mouse_y)
-                print('mouse_in', mhx, mhy)
+                try:
+                    mhx, mhy = mouse_in(mouse_x, mouse_y)
+                except:
+                    break
+                # print('mouse_in', mhx, mhy)
                 uhx, uhy = point_in(unit.x, unit.y)
                 # print('point_in unit', uhx, uhy)
                 if attack:
@@ -246,69 +252,107 @@ def main():
                         centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1),
                                    (uhx, uhy + 1),
                                    (uhx - 1, uhy)]
-                    print(uhx, uhy, mhx, mhy)
+                    # print(uhx, uhy, mhx, mhy)
                     if any_on(mhx, mhy, enemy.units):
                         attacker = who_on(uhx, uhy, player.units)
                         enemy_unit = who_on(mhx, mhy, enemy.units)
                         attacker.attack(enemy_unit)
-                        print('attack', attacker.hp, enemy_unit.hp)
                         attack = False
                     else:
                         attack = False
-                        print('Никто не помер')
                 elif not attack:
                     # Нажатие на кнопку следующего хода
                     if (mouse_x - 1445) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
                         move_counter += 1
                         now = 0
+                        player.refresh()
+                        for i in range(len(player1.units)):  # отображение юнитов игрока 1
+                            player1.units[i].refresh()
+
+                        for i in range(len(player2.units)):  # отображение юнитов игрока 2
+                            player2.units[i].refresh()
                     # Нажатие на кнопку следующего trade
                     elif (mouse_x - 1445) ** 2 + (mouse_y - 817) ** 2 < 57 ** 2:
-                        print('+++')
-                        # print('unit', unit.x, unit.y)
-                        # print('hex ', uhx, uhy)
-                        print(field.field[uhy][uhx][0])
-                        if field.field[uhy][uhx][0] == 'medieval':
-                            x, y = center_hex(uhx, uhy)
-                            player.add_unit(
-                                Unit(100, 0, 15, 0, 2, 10, x, y, screen_size,
-                                     field_size))
-                            # if move_counter % 2 == 0:
-                            #     player1.add_unit(
-                            #         Unit(100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2), int(hex_size[1] / 2), screen_size,
-                            #              field_size))
-                            # else:
-                            #     player2.add_unit(Unit(100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2),
-                            #                           int(hex_size[1] / 2), screen_size, field_size))
-                            # if field.field[uhy][uhx][1] == 0:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 1:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 2:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 3:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 4:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 5:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 6:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 7:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 8:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 9:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 10:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 11:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 12:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 13:
-                            #     pass
-                            # elif field.field[uhy][uhx][1] == 14:
-                            #     pass
+                        if unit.moves > 0:
+
+                            # print('+++')
+                            # print('unit', unit.x, unit.y)
+                            # print('hex ', uhx, uhy)
+                            # print(field.field[uhy][uhx][0])
+                            if field.field[uhy][uhx][0] == 'medieval':
+
+                                # unit.moves -= 1
+                                # x, y = center_hex(uhx, uhy)
+                                # player.add_unit(
+                                #     Unit(100, 0, 15, 0, 2, 10, x, y, screen_size,
+                                #          field_size))
+                                if field.field[uhy][uhx][1] == 0:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 1:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 2:
+                                    if player.money >= 20:
+                                        if player.step_forge + 2  <= move_counter:
+                                            unit.moves = 0
+                                            unit.dmg += 5
+                                            player.money -= 20
+                                            player.step_forge = move_counter
+                                elif field.field[uhy][uhx][1] == 3:
+                                    if player.money >= 10:
+                                        if player.chet_step + 1 <= move_counter:
+                                            unit.moves -= 1
+                                            player.money -= 10
+                                            player.chet_step = move_counter
+                                            if player.treasure_map == 0:
+                                                # TODO say u find a map!!!!!!!!!!!!!!!!!!!!!!
+                                                player.treasure_map = 1
+                                elif field.field[uhy][uhx][1] == 4:
+                                        if player.treasure_map == 1:
+                                            player.money += 50
+                                            player.treasure_map = -1
+
+                                elif field.field[uhy][uhx][1] == 5:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 6:
+                                    if player.money >= 50:
+                                        unit.moves -= 1
+                                        x, y = center_hex(uhx, uhy)
+                                        player.add_unit(
+                                            Unit(100, 0, 15, 0, 2, 10, x, y, screen_size,
+                                                 field_size))
+                                        player.money -= 50
+                                elif field.field[uhy][uhx][1] == 7:
+                                    if player.money >= 50:
+                                        unit.moves -= 1
+                                        x, y = center_hex(uhx, uhy)
+                                        player.add_unit(
+                                            Unit(100, 0, 15, 0, 2, 10, x, y, screen_size,
+                                                 field_size))
+                                        player.money -= 50
+                                elif field.field[uhy][uhx][1] == 8:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 9:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 10:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 11:
+                                    if player.big_treasure == 0:
+                                        unit.moves = 0
+                                        unit.dmg += 15
+                                        player.money += 250
+                                        player.big_treasure = -1
+                                elif field.field[uhy][uhx][1] == 12:
+                                    pass
+                                elif field.field[uhy][uhx][1] == 13:
+                                    if player.money >= 50:
+                                        unit.moves -= 1
+                                        x, y = center_hex(uhx, uhy)
+                                        player.add_unit(
+                                            Unit(100, 0, 15, 0, 2, 10, x, y, screen_size,
+                                                 field_size))
+                                        player.money -= 50
+                                elif field.field[uhy][uhx][1] == 14:
+                                    pass
 
 
                     # Нажатие на кнопку следующего unit
@@ -319,51 +363,61 @@ def main():
                             else:
                                 now += 1
                             unit = player1.units[now]
-                            print('now', now, len(player1.units))
+                            # print('now', now, len(player1.units))
                         else:
                             if now + 1 == len(player2.units):
                                 now = 0
                             else:
                                 now += 1
                             unit = player2.units[now]
-                            print('now', now, len(player2.units))
+                            # print('now', now, len(player2.units))
                     # Нажатие на кнопку attack
                     elif (mouse_x - 1330) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
-                        attack = True
-                        print(attack)
+                        if unit.moves > 0:
+                            if not any_on(uhx, uhy, player.units):
+                                attack = True
+                            # print(attack)
                     else:
-                        # uhx, uhy = point_in(unit.x, unit.y)
-                        # print('uhx, uhy', uhx, uhy)
-                        # по часовой
-                        if uhy % 2 == 0:
-                            centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1),
-                                       (uhx - 1, uhy + 1),
-                                       (uhx - 1, uhy)]
-                        else:
-                            centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1),
-                                       (uhx, uhy + 1),
-                                       (uhx - 1, uhy)]
-                        # print(centres)
-                        stop = True
-                        li = 0
-                        while stop:
-                            if li == 6:
-                                stop = False
-                                li = 0
-                            # print('li =', li)
-                            uhxl, uhyl = centres[li]
-                            # print('uhxl, uhyl', uhxl, uhyl)
-                            x, y = center_hex(uhxl, uhyl)
-                            # print('center', x , y)
-                            # print('mouse', mouse_x, mouse_y)
-                            if (mouse_x - x) ** 2 + (mouse_y - y) ** 2 < 30 ** 2:
-                                stop = False
-                                li = 0
-                                if not any_on(uhxl, uhyl, player.units):
-                                    unit.x = x
-                                    unit.y = y
+                        if unit.moves > 0:
+                            # uhx, uhy = point_in(unit.x, unit.y)
+                            # print('uhx, uhy', uhx, uhy)
+                            # по часовой
+                            if uhy % 2 == 0:
+                                centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1),
+                                           (uhx - 1, uhy + 1),
+                                           (uhx - 1, uhy)]
                             else:
-                                li += 1
+                                centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1),
+                                           (uhx, uhy + 1),
+                                           (uhx - 1, uhy)]
+                            # print(centres)
+                            stop = True
+                            li = 0
+                            while stop:
+                                if li == 6:
+                                    stop = False
+                                    li = 0
+                                # print('li =', li)
+                                uhxl, uhyl = centres[li]
+                                # print('uhxl, uhyl', uhxl, uhyl)
+                                x, y = center_hex(uhxl, uhyl)
+                                # print('center', x , y)
+                                # print('mouse', mouse_x, mouse_y)
+                                if (mouse_x - x) ** 2 + (mouse_y - y) ** 2 < 30 ** 2:
+                                    stop = False
+                                    li = 0
+                                    if not any_on(uhxl, uhyl, player.units) and not any_on(uhxl, uhyl, enemy.units):
+                                        unit.x = x
+                                        unit.y = y
+                                        unit.moves -= 1
+                                        hex_x, hex_y = point_in(unit.x, unit.y)
+                                        if field.field[hex_y][hex_x][0] == 'medieval':
+                                            player.add_building(Building(hex_x, hex_y, field.field[uhy][uhx][1]))
+                                            # print('added', len(player.buildings))
+
+
+                                else:
+                                    li += 1
 
                         # if (mouse_x - c)
                         # l = int(math.sqrt(
