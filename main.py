@@ -16,21 +16,23 @@ colors = {
     'DarkGoldenRod': (184, 134, 11),
     'Tan': (210, 180, 140),
     'SaddleBrown': (139, 69, 19),
-    'светло жёлтый': (255, 217, 73)
+    'светло жёлтый': (255, 217, 73),
+    'MediumSpringGreen': (0, 250, 154),
+    'Yellow': (255, 255, 0),
 }
 move_counter = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
 
 
 def point_in(unit_x, unit_y):
-    #print('pox, poy', unit_x, unit_y)
+    # print('pox, poy', unit_x, unit_y)
     if (unit_y - 35) % 105 == 0:
-        #print('chet')
+        # print('chet')
         uhy = ((unit_y - 35) // 105)
         uhy += uhy
         uhx = ((unit_x - 30) // 60)
     else:
-        #print('nechet')
+        # print('nechet')
         uhy = ((unit_y - 85) // 105)
         uhy += uhy + 1
         uhx = ((unit_x - 1) // 60)
@@ -42,7 +44,7 @@ def center_hex(uhx, uhy):
     y = 0
     if uhy % 2 == 0:
         x = 30 + 60 * uhx
-        y = 35 + (((uhy) // 2)) * 105
+        y = 35 + (uhy // 2) * 105
     else:
         x = 60 + 60 * uhx
         y = 85 + (((uhy + 1) // 2) - 1) * 105
@@ -73,9 +75,9 @@ def mouse_in(mx, my):
     hy2 += hy2 + 1
     hx2 = (mx - 1) // 60
     centres1 = [(hx1 - 1, hy1 - 1), (hx1, hy1 - 1), (hx1 + 1, hy1), (hx1, hy1 + 1), (hx1 - 1, hy1 + 1),
-               (hx1 - 1, hy1)]
+                (hx1 - 1, hy1)]
     centres2 = [(hx2, hy2 - 1), (hx2 + 1, hy2 - 1), (hx2 + 1, hy2), (hx2 + 1, hy2 + 1), (hx2, hy2 + 1),
-               (hx2 - 1, hy2)]
+                (hx2 - 1, hy2)]
     stop = True
     li = 0
     while stop:
@@ -113,16 +115,36 @@ def mouse_in(mx, my):
         else:
             li += 1
 
+
 # Отрисовка панели управления
-def panel_draw(size: (int, int), screen):
+def panel_draw(size: (int, int), screen, sel_unit: Unit, sel_player: Player):
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
-    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'next', screen), (size[0] - size[1] / 2, size[1] / 2))  # Кнопка следующего хода
-    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'attack', screen), (size[0] - size[1], size[1] / 2))  # Кнопка атаки
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'next', screen),
+               (size[0] - size[1] / 2, size[1] / 2))  # Кнопка следующего хода
+    panel.blit(button_draw((size[1] / 2, size[1] / 2), 'attack', screen),
+               (size[0] - size[1], size[1] / 2))  # Кнопка атаки
     panel.blit(button_draw((size[1] / 2, size[1] / 2), 'trade', screen), (size[0] - size[1] / 2, 0))  # Кнопка защиты
     panel.blit(button_draw((size[1] / 2, size[1] / 2), 'select', screen), (size[0] - size[1], 0))  # Кнопка след юнит
     '''panel.blit(button_draw((size[1], size[1]), 'trade'), (size[0] - 4*size[1], 0))  # Кнопка торговли
     panel.blit(button_draw((size[1], size[1]), 'select'), (size[0] - 5*size[1], 0))  # Кнопка торговли'''
+    # Отрисовка характеристик выбранного юнита
+    text = [f'Параметры выбранного юнита:',
+            f'Здоровье: {sel_unit.hp}/{sel_unit.max_hp}',
+            f'Сила атаки: {sel_unit.dmg}',
+            f'Защита: {sel_unit.defense}',
+            f'Уровень: {sel_unit.lvl + 1}',
+            f'Опыт: {sel_unit.exp}',
+            f'Очки перемещения: {sel_unit.moves}/{sel_unit.max_moves}',
+            f'Мана: {sel_unit.mana}/{sel_unit.max_mana}',
+            ]
+    for i in range(len(text)):
+        panel.blit(pg.font.Font(None, 25).render(text[i], True, colors['MediumSpringGreen']), (10, 10 + i * 25))
+    # Информация об игроке
+    panel.blit(pg.font.Font(None, 25).render(f'Игрок {move_counter % 2 + 1}', True, colors['MediumSpringGreen']),
+               (size[0] / 2, size[1] / 2 - 25))
+    panel.blit(pg.font.Font(None, 25).render(f'Монеты: {sel_player.money} квач', True, colors['MediumSpringGreen']),
+               (size[0] / 2, size[1] / 2))
     return panel
 
 
@@ -167,11 +189,15 @@ def main():
     screen = pg.display.set_mode((screen_size[0], screen_size[1]))
     is_run = True
     a = []
-    medbld = ['Небольшая мельница.Приносит 5 золота в ход.','Изящная арка','Кузница позволяет улучшать оружие и броню.','Таверна.Ускоренная регенирация +10 hp',
-              'Старое Кладбище.Купите карту, чтобы найти сокровище','Ферма.Приносит 10 золота в ход','Таверна наёмников.Можно нанять войска',
-              'Замок наёмников. Можно нанять усовершенствованные войска.','Местная пекарня.Приносит 10 золота в ход','Небольшой замок.Приносит 15 золота в ход',
-              'Королевский замок.Приносит 15 золота в ход,можно нанимать войска','Сокровище. 50 золота , +5 к силе оружия','Золотой рудник.Приносит 20 золота в ход',
-              'Башня магов.Можно нанять магов за золото и очки знаменитости','Лагерь разбойников']
+    med_bld = ['Небольшая мельница.Приносит 5 золота в ход.', 'Изящная арка',
+               'Кузница позволяет улучшать оружие и броню.', 'Таверна.Ускоренная регенирация +10 hp',
+               'Старое Кладбище.Купите карту, чтобы найти сокровище', 'Ферма.Приносит 10 золота в ход',
+               'Таверна наёмников.Можно нанять войска',
+               'Замок наёмников. Можно нанять усовершенствованные войска.', 'Местная пекарня.Приносит 10 золота в ход',
+               'Небольшой замок.Приносит 15 золота в ход',
+               'Королевский замок.Приносит 15 золота в ход,можно нанимать войска',
+               'Сокровище. 50 золота , +5 к силе оружия', 'Золотой рудник.Приносит 20 золота в ход',
+               'Башня магов.Можно нанять магов за золото и очки знаменитости', 'Лагерь разбойников']
     player1 = Player(100, a)
     player1.add_unit(
         Unit(100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2), int(hex_size[1] / 2), screen_size, field_size))
@@ -210,7 +236,7 @@ def main():
                 mhx, mhy = mouse_in(mouse_x, mouse_y)
                 print('mouse_in', mhx, mhy)
                 uhx, uhy = point_in(unit.x, unit.y)
-                #print('point_in unit', uhx, uhy)
+                # print('point_in unit', uhx, uhy)
                 if attack:
                     if uhy % 2 == 0:
                         centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1),
@@ -306,28 +332,30 @@ def main():
                         attack = True
                         print(attack)
                     else:
-                        #uhx, uhy = point_in(unit.x, unit.y)
+                        # uhx, uhy = point_in(unit.x, unit.y)
                         # print('uhx, uhy', uhx, uhy)
                         # по часовой
-                        if  uhy % 2 == 0:
-                            centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1), (uhx - 1, uhy + 1),
+                        if uhy % 2 == 0:
+                            centres = [(uhx - 1, uhy - 1), (uhx, uhy - 1), (uhx + 1, uhy), (uhx, uhy + 1),
+                                       (uhx - 1, uhy + 1),
                                        (uhx - 1, uhy)]
                         else:
-                            centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1), (uhx, uhy + 1),
+                            centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1),
+                                       (uhx, uhy + 1),
                                        (uhx - 1, uhy)]
-                        #print(centres)
+                        # print(centres)
                         stop = True
                         li = 0
                         while stop:
                             if li == 6:
                                 stop = False
                                 li = 0
-                            #print('li =', li)
+                            # print('li =', li)
                             uhxl, uhyl = centres[li]
-                            #print('uhxl, uhyl', uhxl, uhyl)
+                            # print('uhxl, uhyl', uhxl, uhyl)
                             x, y = center_hex(uhxl, uhyl)
-                            #print('center', x , y)
-                            #print('mouse', mouse_x, mouse_y)
+                            # print('center', x , y)
+                            # print('mouse', mouse_x, mouse_y)
                             if (mouse_x - x) ** 2 + (mouse_y - y) ** 2 < 30 ** 2:
                                 stop = False
                                 li = 0
@@ -373,8 +401,18 @@ def main():
         for i in range(len(player2.units)):  # отображение юнитов игрока 2
             player2.units[i].draw(screen)
 
+        # Отрисовка рамки выбранного юнита
+        pg.draw.polygon(screen, colors['Yellow'], [
+            (unit.x - hex_size[0] / 2, unit.y - hex_size[1] / 4),
+            (unit.x, unit.y - hex_size[1] / 2),
+            (unit.x + hex_size[0] / 2, unit.y - hex_size[1] / 4),
+            (unit.x + hex_size[0] / 2, unit.y + hex_size[1] / 4),
+            (unit.x, unit.y + hex_size[1] / 2),
+            (unit.x - hex_size[0] / 2, unit.y + hex_size[1] / 4),
+        ], 3)
+
         panel_coord = (0, 750)  # Координаты панели управления
-        screen.blit(panel_draw(panel_size, screen), panel_coord)
+        screen.blit(panel_draw(panel_size, screen, unit, player), panel_coord)
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
