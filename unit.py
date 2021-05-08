@@ -1,19 +1,14 @@
+"""Модуль юнитов"""
 import pygame as pg
-import os
-
-white = (255, 255, 255)
-black = (0, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 180)
-red = (255, 0, 0)
 
 
-# Класс игровых юнитов
 class Unit:
-    def __init__(self, hp: int, mana: int, dmg: int, defense: int, moves: int, regen: int,
-                 x: int, y: int, screen_size: (int, int), field_size: (int, int)):
+    """Класс игровых юнитов"""
+    def __init__(self, title: str, hp: int, mana: int, dmg: int, defense: int, moves: int,
+                 regen: int, x: int, y: int, screen_size: (int, int), field_size: (int, int)):
+        self.title = title
         self.max_hp = hp  # Максимальное количество здоровья
-        self.hp = hp  # Здоровье
+        self.health = hp  # Здоровье
         self.regen = regen
         self.lvl = 0  # Уровень
         self.exp = 0  # Опыт
@@ -23,57 +18,65 @@ class Unit:
         self.defense = defense  # Защита
         self.max_moves = moves  # Максимальное количество очков перемещения
         self.moves = moves  # Количество очков перемещения
-        self.x = x
-        self.y = y
+        self.coord_x = x
+        self.coord_y = y
         self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
-        self.hex_size = (screen_size[0] // field_size[0], screen_size[1] // field_size[1])  # Размер гекса (120, 140)
+        self.hex_size = (screen_size[0] // field_size[0],  # Размер гекса (120, 140)
+                         screen_size[1] // field_size[1])
         self.image = pg.transform.scale(self.image, self.hex_size)  # Масштабирование
 
-    # Отрисовка юнита
-    def draw(self, screen):
-        screen.blit(self.image, self.image.get_rect(bottomright=(self.x + self.hex_size[1] // 2,
-                                                                 self.y + self.hex_size[0] // 2)))  # Отрисовка
+    def draw(self, screen) -> None:
+        """Отрисовка юнита"""
+        if self.title == 'Воин':
+            screen.blit(self.image,  # Отрисовка
+                        self.image.get_rect(bottomright=(self.coord_x + self.hex_size[1] // 2,
+                                                         self.coord_y + self.hex_size[0] // 2)))
 
-    # Обновление перед ходом
-    def refresh(self):
+    def refresh(self) -> None:
+        """Обновление перед ходом"""
         # Регенерация
-        if (self.hp != self.max_hp) and ((self.hp + self.regen) <= self.max_hp):
-            self.hp += self.regen
-        elif (self.hp + self.regen) > self.max_hp:
-            self.hp = self.max_hp
+        if (self.health != self.max_hp) and ((self.health + self.regen) <= self.max_hp):
+            self.health += self.regen
+        elif (self.health + self.regen) > self.max_hp:
+            self.health = self.max_hp
         self.mana = self.max_mana  # Восстановление маны
         self.moves = self.max_moves  # Восстановление очков перемещения
 
-    # Атака
-    def attack(self, enemy):
+    def attack(self, enemy) -> None:
+        """
+        Атака
+        :param enemy: кого атакуют
+        :return:
+        """
         enemy: Unit
-        enemy.hp -= self.dmg  # Нанесение урона
+        enemy.health -= self.dmg  # Нанесение урона
         self.moves = 0  # Обнуление очков перемещения
         if not enemy.is_alive():  # Если противник побежден
             self.exp += 50 // self.lvl ** 0.5  # получение опыта
             self.check()  # Проверка на новый уровень
         else:  # Если противник не побежден
-            self.hp -= enemy.dmg // 2  # Нанесение ответного урона
+            self.health -= enemy.dmg // 2  # Нанесение ответного урона
             if not self.is_alive():  # Если юнит погиб
                 enemy.exp += 50 // enemy.lvl ** 0.5  # Получение противником опыта
                 enemy.check()  # Проверка на новый уровень
 
-    # Защита
-    def defend(self, protect):
+    def defend(self, protect: int) -> None:
+        """Защита"""
         if self.moves != 0:
             self.defend += protect
             self.moves = 0
 
-    # Проверка на вшивость
-    def check(self):
+    def check(self) -> None:
+        """Проверка на вшивость"""
         # Получен ли уровень
         if self.exp >= 100:
             self.lvl += 1
             self.exp = 0
 
-    # Жив ли юнит
-    def is_alive(self):
-        return self.hp > 0
+    def is_alive(self) -> bool:
+        """Жив ли юнит"""
+        return self.health > 0
 
-    def movement(self):
+    def movement(self) -> bool:
+        """Проверка на возможность перемещения"""
         return self.moves > 0
