@@ -1,4 +1,5 @@
 """Главный модуль программы"""
+
 import sys
 import os
 import math
@@ -76,13 +77,15 @@ def any_on(coord_x, coord_y, units) -> bool:
             return True
     return False
 
+
 def how_much_on(hx, hy, units):
     count = 0
     for i in range(len(units)):
-        uhx, uhy = point_in(units[i].x, units[i].y)
+        uhx, uhy = point_in(units[i].coord_x, units[i].coord_y)
         if hx == uhx and hy == uhy:
             count += 1
     return count
+
 
 def mouse_in(mouse_x, mouse_y) -> tuple[int, int]:
     """Поиск гекса по координатам мыши"""
@@ -246,11 +249,11 @@ def main():
     print(med_bld)
     player1 = Player(100, [], [])
     player1.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2),
+        Unit('Воин', 100, 0, 15, 0, 55, 10, int(3 * hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     player2 = Player(100, [], [])
     player2.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2),
+        Unit('Воин', 100, 0, 15, 0, 55, 10, int(24 * hex_size[0] - hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     # Загрузка данных
     global field
