@@ -1,9 +1,8 @@
-import building
-import unit
-import pygame as pg
+"""Модуль игрока"""
 
 
 class Player:
+    """Класс игрока"""
     def __init__(self, money: int, units, buildings):
         self.money = money
         self.units = units
@@ -17,16 +16,17 @@ class Player:
         self.income = 0
         self.big_treasure = 0
 
-    def add_unit(self, unit):
+    def add_unit(self, unit) -> None:
+        """Добавление юнита"""
         self.units.append(unit)
-        # power++
 
-    def add_building(self, building):
+    def add_building(self, building) -> None:
+        """Добавление строения"""
         self.buildings.append(building)
         self.revenue()
-        # power++
 
-    def revenue(self):
+    def revenue(self) -> None:
+        """Увеличение дохода"""
         for i in range(len(self.buildings)):
             if self.buildings[i].index == 0:
                 self.income += 5
@@ -41,5 +41,6 @@ class Player:
             elif self.buildings[i].index == 12:
                 self.income += 20
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """Добавление денег после хода"""
         self.money += self.income
