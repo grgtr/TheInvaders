@@ -76,11 +76,11 @@ def any_on(coord_x, coord_y, units) -> bool:
     return False
 
 
-def how_much_on(hx, hy, units):
+def how_much_on(hex_x, hex_y, units):
     count = 0
     for i in range(len(units)):
         uhx, uhy = point_in(units[i].coord_x, units[i].coord_y)
-        if hx == uhx and hy == uhy:
+        if hex_x == uhx and hex_y == uhy:
             count += 1
     return count
 
