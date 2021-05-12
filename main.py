@@ -1,13 +1,11 @@
 """Главный модуль программы"""
 
 import sys
-import os
-import math
-from math import ceil
-from field import *
-from unit import *
-from building import *
-from player import *
+import pygame as pg
+from field import Field
+from unit import Unit
+from building import Building
+from player import Player
 
 field_size = 25, 14
 hex_size = 60, 70  # Размер гексов (6:7)
