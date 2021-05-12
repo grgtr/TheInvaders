@@ -66,6 +66,13 @@ def any_on(hx, hy, units):
             return True
     return False
 
+def how_much_on(hx, hy, units):
+    count = 0
+    for i in range(len(units)):
+        uhx, uhy = point_in(units[i].x, units[i].y)
+        if hx == uhx and hy == uhy:
+            count += 1
+    return count
 
 def mouse_in(mx, my):
     # print('pox, poy', unit_x, unit_y)
@@ -231,7 +238,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
-                print(mouse_x, mouse_y)
+                # print(mouse_x, mouse_y)
             if event.type == pg.QUIT:
                 is_run = False
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -252,7 +259,8 @@ def main():
                         centres = [(uhx, uhy - 1), (uhx + 1, uhy - 1), (uhx + 1, uhy), (uhx + 1, uhy + 1),
                                    (uhx, uhy + 1),
                                    (uhx - 1, uhy)]
-                    # print(uhx, uhy, mhx, mhy)
+                    print(uhx, uhy, mhx, mhy)
+                    # print('attackREALY')
                     if any_on(mhx, mhy, enemy.units):
                         attacker = who_on(uhx, uhy, player.units)
                         enemy_unit = who_on(mhx, mhy, enemy.units)
@@ -373,8 +381,11 @@ def main():
                             # print('now', now, len(player2.units))
                     # Нажатие на кнопку attack
                     elif (mouse_x - 1330) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
+                        print('attack')
                         if unit.moves > 0:
-                            if not any_on(uhx, uhy, player.units):
+                            # print('attackmaybe')
+                            if  how_much_on(uhx, uhy, player.units) == 1:
+                                # print('attackTRUE')
                                 attack = True
                             # print(attack)
                     else:
