@@ -9,7 +9,7 @@ from player import Player
 
 field_size = 25, 14
 hex_size = 60, 70  # Размер гексов (6:7)
-screen_size = width, height = field_size[0] * hex_size[0],\
+screen_size = width, height = field_size[0] * hex_size[0], \
                               field_size[1] * hex_size[1]  # Размер экрана
 field: Field
 colors = {
@@ -223,35 +223,16 @@ def button_draw(size: (int, int), form: str) -> pg.Surface:
     return btn
 
 
-def main():
-    """Главная функция кода"""
-    pg.init()
-    screen = pg.display.set_mode((screen_size[0], screen_size[1]))
+def game(screen: pg.Surface):
+    """Функция игры"""
     is_run = True
-    med_bld = ['Небольшая мельница. Приносит 5 золота в ход.',
-               'Изящная арка',
-               'Кузница позволяет улучшать оружие и броню.',
-               'Таверна.Ускоренная регенирация +10 hp',
-               'Старое кладбище. Купите карту, чтобы найти сокровище',
-               'Ферма. Приносит 10 золота в ход',
-               'Таверна наёмников. Можно нанять войска',
-               'Замок наёмников. Можно нанять усовершенствованные войска.',
-               'Местная пекарня. Приносит 10 золота в ход',
-               'Небольшой замок. Приносит 15 золота в ход',
-               'Королевский замок. Приносит 15 золота в ход, можно нанимать войска',
-               'Сокровище. 50 золота, +5 к силе оружия',
-               'Золотой рудник. Приносит 20 золота в ход',
-               'Башня магов. Можно нанять магов за золото и очки знаменитости',
-               'Лагерь разбойников',
-               ]
-    print(med_bld)
     player1 = Player(100, [], [])
     player1.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 55, 10, int(3 * hex_size[0] / 2),
+        Unit('Воин', 100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     player2 = Player(100, [], [])
     player2.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 55, 10, int(24 * hex_size[0] - hex_size[0] / 2),
+        Unit('Воин', 100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     # Загрузка данных
     global field
@@ -276,6 +257,12 @@ def main():
                 # print(mouse_x, mouse_y)
             if event.type == pg.QUIT:
                 is_run = False
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                keys = pg.key.get_pressed()
+                if keys[pg.K_a] and keys[pg.K_m]:  # Чит на ходы и деньги
+                    player.money += 1000
+                    unit.moves += 100
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 try:
@@ -503,7 +490,86 @@ def main():
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
         pg.time.wait(10)
-    sys.exit()
+
+
+def menu(screen: pg.Surface) -> str:
+    """Функция меню"""
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.MOUSEMOTION:
+                mouse_x, mouse_y = event.pos
+            if event.type == pg.QUIT:
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                keys = pg.key.get_pressed()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if (width * 0.375 < mouse_x < width * 0.625)\
+                        and (height / 4 < mouse_y < height * 0.625):  # Нажатие кнопки ИГРАТЬ
+                    return 'game'
+                if (width * 0.375 < mouse_x < width * 0.625)\
+                        and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
+                    return 'quit'
+                # Нажатие кнопки ВЫХОД
+
+        # Отрисовка кадра
+        screen.fill(colors['DeepSkyBlue'])  # Белый фон, рисуется первым!
+
+        # Отрисовка текста
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 150, height / 4))
+
+        # Отрисовка кнопок меню
+        pg.draw.rect(screen, colors['White'],  # Кнопка ИГРАТЬ
+                     (width * 0.375, height * 0.375, width / 4, height / 4), 10)
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Играть',
+                                                                   True,
+                                                                   colors['White']),
+                    (width * 0.42, height * 0.42))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка ВЫХОД
+                     (width * 0.375, height * 0.7, width / 4, height / 4), 10)
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Выход',
+                                                                   True,
+                                                                   colors['White']),
+                    (width * 0.41, height * 0.76))
+
+        # Подтверждение отрисовки и ожидание
+        pg.display.flip()
+        pg.time.wait(10)
+
+
+def main():
+    """Главная функция кода"""
+    pg.init()
+    screen = pg.display.set_mode((screen_size[0], screen_size[1]))
+    med_bld = ['Небольшая мельница. Приносит 5 золота в ход.',
+               'Изящная арка',
+               'Кузница позволяет улучшать оружие и броню.',
+               'Таверна.Ускоренная регенирация +10 hp',
+               'Старое кладбище. Купите карту, чтобы найти сокровище',
+               'Ферма. Приносит 10 золота в ход',
+               'Таверна наёмников. Можно нанять войска',
+               'Замок наёмников. Можно нанять усовершенствованные войска.',
+               'Местная пекарня. Приносит 10 золота в ход',
+               'Небольшой замок. Приносит 15 золота в ход',
+               'Королевский замок. Приносит 15 золота в ход, можно нанимать войска',
+               'Сокровище. 50 золота, +5 к силе оружия',
+               'Золотой рудник. Приносит 20 золота в ход',
+               'Башня магов. Можно нанять магов за золото и очки знаменитости',
+               'Лагерь разбойников',
+               ]
+    print(med_bld)
+    while True:
+        command = menu(screen)
+        if command == 'game':
+            game(screen)
+        elif command == 'authors':
+            pass
+        elif command == 'quit':
+            sys.exit()
 
 
 if __name__ == '__main__':
