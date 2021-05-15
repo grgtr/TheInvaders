@@ -504,18 +504,24 @@ def menu(screen: pg.Surface) -> str:
                 keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if (width * 0.375 < mouse_x < width * 0.625)\
+                if (width * 0.375 < mouse_x < width * 0.625) \
                         and (height / 4 < mouse_y < height * 0.625):  # Нажатие кнопки ИГРАТЬ
                     return 'game'
-                if (width * 0.375 < mouse_x < width * 0.625)\
+                if (width * 0.375 < mouse_x < width * 0.625) \
                         and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
                     return 'quit'
-                # Нажатие кнопки ВЫХОД
+                if (width * 0.85 < mouse_x < width * 0.975) \
+                        and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки АВТОРЫ
+                    return 'authors'
 
         # Отрисовка кадра
-        screen.fill(colors['DeepSkyBlue'])  # Белый фон, рисуется первым!
+        screen.fill(colors['DeepSkyBlue'])
 
         # Отрисовка текста
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('TheInvaders',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 200, height / 8))
         screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
                                                                    True,
                                                                    colors['White']),
@@ -535,6 +541,53 @@ def menu(screen: pg.Surface) -> str:
                                                                    True,
                                                                    colors['White']),
                     (width * 0.41, height * 0.76))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка АВТОРЫ
+                     (width * 0.85, height * 0.9, width / 8, height / 16), 5)
+        screen.blit(pg.font.Font('english-script.ttf', 50).render('Авторы',
+                                                                  True,
+                                                                  colors['White']),
+                    (width * 0.86, height * 0.9))
+
+        # Подтверждение отрисовки и ожидание
+        pg.display.flip()
+        pg.time.wait(10)
+
+
+def authors(screen: pg.Surface):
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.MOUSEMOTION:
+                mouse_x, mouse_y = event.pos
+            if event.type == pg.QUIT:
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                keys = pg.key.get_pressed()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if (width * 0.85 < mouse_x < width * 0.975) \
+                        and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки НАЗАД
+                    return
+
+        # Отрисовка кадра
+        screen.fill(colors['DeepSkyBlue'])
+
+        # Отрисовка текста
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Авторы:',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 150, height / 4))
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Команда разработчиков Devastaters',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 8, height / 4 + 100))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка НАЗАД
+                     (width * 0.85, height * 0.9, width / 8, height / 16), 5)
+        screen.blit(pg.font.Font('english-script.ttf', 50).render('Назад',
+                                                                  True,
+                                                                  colors['White']),
+                    (width * 0.86, height * 0.9))
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -567,7 +620,7 @@ def main():
         if command == 'game':
             game(screen)
         elif command == 'authors':
-            pass
+            authors(screen)
         elif command == 'quit':
             sys.exit()
 
