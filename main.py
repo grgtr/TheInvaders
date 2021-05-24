@@ -215,11 +215,9 @@ def button_draw(size: (int, int), form: str) -> pg.Surface:
         img = pg.transform.scale(img, (int(size[1] / 1.1), int(size[1] / 1.1)))  # Масштабирование
         btn.blit(img, img.get_rect(bottomright=(0.95 * size[1], int(1.0 * size[1]))))  # Отрисовка
     elif form == 'select':
-        # TODO картинка кнопки select
-        # img = pg.image.load(path)  # Загрузка картинки
-        # img = pg.transform.scale(img, size)  # Масштабирование
-        # screen.blit(img, img.get_rect(bottomright=(w, h)))  # Отрисовка
-        pass
+        img = pg.image.load('buttons/select.png')  # Загрузка картинки
+        img = pg.transform.scale(img, (int(size[1] / 1.1), int(size[1] / 1.1)))  # Масштабирование
+        btn.blit(img, img.get_rect(bottomright=(0.95 * size[1], int(1.0 * size[1]))))  # Отрисовка
     return btn
 
 
@@ -228,11 +226,11 @@ def game(screen: pg.Surface):
     is_run = True
     player1 = Player(100, [], [])
     player1.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 2, 10, int(3 * hex_size[0] / 2),
+        Unit('knight',int(3 * hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     player2 = Player(100, [], [])
     player2.add_unit(
-        Unit('Воин', 100, 0, 15, 0, 2, 10, int(24 * hex_size[0] - hex_size[0] / 2),
+        Unit('knight',int(24 * hex_size[0] - hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     # Загрузка данных
     global field
@@ -337,25 +335,37 @@ def game(screen: pg.Surface):
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 5:
                                     pass
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 6:
-                                    if player.money >= 50:
+                                    if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
-                                            Unit('Воин', 100, 0, 15, 0, 2, 10,
+                                            Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 50
+                                        player.money -= 250
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 7:
-                                    if player.money >= 50:
+                                    if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
-                                            Unit('Воин', 100, 0, 15, 0, 2, 10,
+                                            Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 50
+                                        player.money -= 250
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 8:
-                                    pass
+                                    if player.money >= 250:
+                                        unit.moves -= 1
+                                        coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
+                                        player.add_unit(
+                                            Unit('elf',
+                                                 coord_x, coord_y, screen_size, field_size))
+                                        player.money -= 200
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 9:
-                                    pass
+                                    if player.money >= 200:
+                                        unit.moves -= 1
+                                        coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
+                                        player.add_unit(
+                                            Unit('elf',
+                                                 coord_x, coord_y, screen_size, field_size))
+                                        player.money -= 200
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 10:
                                     pass
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 11:
@@ -367,13 +377,13 @@ def game(screen: pg.Surface):
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 12:
                                     pass
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 13:
-                                    if player.money >= 50:
+                                    if player.money >= 300:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
-                                            Unit('Воин', 100, 0, 15, 0, 2, 10,
+                                            Unit('wizard',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 50
+                                        player.money -= 100
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 14:
                                     pass
 

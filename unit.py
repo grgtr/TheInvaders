@@ -4,33 +4,70 @@ import pygame as pg
 
 class Unit:
     """Класс игровых юнитов"""
-    def __init__(self, title: str, hp: int, mana: int, dmg: int, defense: int, moves: int,
-                 regen: int, x: int, y: int, screen_size: (int, int), field_size: (int, int)):
+    def __init__(self, title: str, x: int, y: int, screen_size: (int, int), field_size: (int, int)):
         self.title = title
-        self.max_hp = hp  # Максимальное количество здоровья
-        self.health = hp  # Здоровье
-        self.regen = regen
-        self.lvl = 0  # Уровень
-        self.exp = 0  # Опыт
-        self.max_mana = mana  # Максимальное количество маны
-        self.mana = 0  # Количество маны
-        self.dmg = dmg  # Урон
-        self.defense = defense  # Защита
-        self.max_moves = moves  # Максимальное количество очков перемещения
-        self.moves = moves  # Количество очков перемещения
+        # self.max_hp = hp  # Максимальное количество здоровья
+        # self.health = hp  # Здоровье
+        # self.regen = regen
+        # self.lvl = 0  # Уровень
+        # self.exp = 0  # Опыт
+        # self.max_mana = mana  # Максимальное количество маны
+        # self.mana = 0  # Количество маны
+        # self.dmg = dmg  # Урон
+        # self.defense = defense  # Защита
+        # self.max_moves = moves  # Максимальное количество очков перемещения
+        # self.moves = moves  # Количество очков перемещения
         self.coord_x = x
         self.coord_y = y
-        self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
+        if self.title == 'knight':
+            self.max_hp = 150  # Максимальное количество здоровья
+            self.health = 150  # Здоровье
+            self.regen = 15
+            self.lvl = 0  # Уровень
+            self.exp = 0  # Опыт
+            self.max_mana = 0  # Максимальное количество маны
+            self.mana = 0  # Количество маны
+            self.dmg = 50  # Урон
+            self.defense = 0  # Защита
+            self.max_moves = 2  # Максимальное количество очков перемещения
+            self.moves = 2  # Количество очков перемещения
+            self.image = pg.image.load('units/knight/standing/standing05.png')
+        elif self.title == 'wizard':
+            self.max_hp = 100  # Максимальное количество здоровья
+            self.health = 100  # Здоровье
+            self.regen = 15
+            self.lvl = 0  # Уровень
+            self.exp = 0  # Опыт
+            self.max_mana = 100  # Максимальное количество маны
+            self.mana = 100  # Количество маны
+            self.dmg = 40  # Урон
+            self.defense = 0  # Защита
+            self.max_moves = 2  # Максимальное количество очков перемещения
+            self.moves = 2  # Количество очков перемещения
+            self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
+        elif self.title == 'elf':
+            self.max_hp = 120  # Максимальное количество здоровья
+            self.health = 120  # Здоровье
+            self.regen = 15
+            self.lvl = 0  # Уровень
+            self.exp = 0  # Опыт
+            self.max_mana = 0  # Максимальное количество маны
+            self.mana = 0  # Количество маны
+            self.dmg = 60  # Урон
+            self.defense = 0  # Защита
+            self.max_moves = 3  # Максимальное количество очков перемещения
+            self.moves = 3  # Количество очков перемещения
+            pass
         self.hex_size = (screen_size[0] // field_size[0],  # Размер гекса (120, 140)
                          screen_size[1] // field_size[1])
         self.image = pg.transform.scale(self.image, self.hex_size)  # Масштабирование
 
     def draw(self, screen) -> None:
         """Отрисовка юнита"""
-        if self.title == 'Воин':
-            screen.blit(self.image,  # Отрисовка
-                        self.image.get_rect(bottomright=(self.coord_x + self.hex_size[1] // 2,
-                                                         self.coord_y + self.hex_size[0] // 2)))
+
+        screen.blit(self.image,  # Отрисовка
+                    self.image.get_rect(bottomright=(self.coord_x + self.hex_size[1] // 2,
+                                                     self.coord_y + self.hex_size[0] // 2)))
 
     def refresh(self) -> None:
         """Обновление перед ходом"""
