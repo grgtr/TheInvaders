@@ -76,13 +76,22 @@ def any_on(coord_x, coord_y, units) -> bool:
     return False
 
 
-def how_much_on(hex_x, hex_y, units):
+def how_much_on(hex_x, hex_y, units) -> int:
     count = 0
     for i in range(len(units)):
         uhx, uhy = point_in(units[i].coord_x, units[i].coord_y)
         if hex_x == uhx and hex_y == uhy:
             count += 1
     return count
+
+def whose_build(build, player, enemy) -> int:
+    for i in player.buildings:
+        if i.hex_x == build.hex_x and i.hex_y  == build.hex_y:
+            return -1
+    for i in range(len(enemy.buildings)):
+        if enemy.buildings[i].hex_x == build.hex_x and enemy.buildings[i].hex_y == build.hex_y:
+            return i
+    return -2
 
 
 def mouse_in(mouse_x, mouse_y) -> tuple[int, int]:
@@ -293,9 +302,11 @@ def game(screen: pg.Surface):
                 elif not attack:
                     # Нажатие на кнопку следующего хода
                     if (mouse_x - 1445) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
+                        player.refresh()
+                        player.revenue()
+                        enemy.revenue()
                         MOVE_COUNTER += 1
                         now = 0
-                        player.refresh()
                         # Отрисовка юнитов игрока 1
                         for i in range(len(player1.units)):
                             player1.units[i].refresh()
@@ -444,10 +455,36 @@ def game(screen: pg.Surface):
                                         unit.moves -= 1
                                         hex_x, hex_y = point_in(unit.coord_x, unit.coord_y)
                                         if field.field[hex_y][hex_x][0] == 'medieval':
-                                            player.add_building(Building(
-                                                hex_x,
-                                                hex_y,
-                                                field.field[unit_hex_y][unit_hex_x][1]))
+                                            print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                            # TODO fix
+                                            whose = whose_build(Building(hex_x, hex_y,
+                                                                    field.field[hex_y][hex_x][1]),
+                                                           player, enemy)
+                                            # print(whose, 'whose')
+                                            if whose == -2:
+                                                player.add_building(Building(
+                                                    hex_x,
+                                                    hex_y,
+                                                    field.field[hex_y][hex_x][1]))
+                                                print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                            elif whose == -1:
+                                                pass
+                                            else:
+                                                print(player.buildings)
+                                                print(enemy.buildings)
+                                                player.add_building(Building(
+                                                    hex_x,
+                                                    hex_y,
+                                                    field.field[hex_y][hex_x][1]))
+                                                # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                                enemy.buildings.pop(whose)
+
+                                            print(player.buildings)
+                                            print(enemy.buildings)
+                                            player.refresh()
+                                            player.money -= player.income
+                                            enemy.refresh()
+                                            enemy.money -= enemy.income
                                 else:
                                     counter += 1
 

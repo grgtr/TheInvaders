@@ -27,7 +27,9 @@ class Player:
 
     def revenue(self) -> None:
         """Увеличение дохода"""
+        self.income = 0
         for i in range(len(self.buildings)):
+            # print(self.buildings[i].index)
             if self.buildings[i].index == 0:
                 self.income += 5
             elif self.buildings[i].index == 5:
@@ -40,6 +42,8 @@ class Player:
                 self.income += 15
             elif self.buildings[i].index == 12:
                 self.income += 20
+        # print(self.income)
+
 
     def refresh(self) -> None:
         """Добавление денег после хода"""
