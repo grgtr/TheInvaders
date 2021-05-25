@@ -84,9 +84,10 @@ def how_much_on(hex_x, hex_y, units) -> int:
             count += 1
     return count
 
+
 def whose_build(build, player, enemy) -> int:
     for i in player.buildings:
-        if i.hex_x == build.hex_x and i.hex_y  == build.hex_y:
+        if i.hex_x == build.hex_x and i.hex_y == build.hex_y:
             return -1
     for i in range(len(enemy.buildings)):
         if enemy.buildings[i].hex_x == build.hex_x and enemy.buildings[i].hex_y == build.hex_y:
@@ -141,7 +142,7 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
     med_bld = ['Небольшая мельница. Приносит 5 золота в ход.',  # Подписи к клеткам
                'Изящная арка',
                'Кузница позволяет улучшать оружие и броню.',
-               'Таверна.Ускоренная регенирация +10 hp',
+               'Таверна.Ускоренная регенерация +10 hp',
                'Старое кладбище. Купите карту, чтобы найти сокровище',
                'Ферма. Приносит 10 золота в ход',
                'Таверна наёмников. Можно нанять войска',
@@ -251,11 +252,11 @@ def game(screen: pg.Surface):
     is_run = True
     player1 = Player(100, [], [])
     player1.add_unit(
-        Unit('knight',int(3 * hex_size[0] / 2),
+        Unit('knight', int(3 * hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     player2 = Player(100, [], [])
     player2.add_unit(
-        Unit('knight',int(24 * hex_size[0] - hex_size[0] / 2),
+        Unit('knight', int(24 * hex_size[0] - hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     # Загрузка данных
     global field
@@ -474,8 +475,8 @@ def game(screen: pg.Surface):
                                             print(hex_x, hex_y, field.field[hex_y][hex_x][1])
                                             # TODO fix
                                             whose = whose_build(Building(hex_x, hex_y,
-                                                                    field.field[hex_y][hex_x][1]),
-                                                           player, enemy)
+                                                                         field.field[hex_y][hex_x][1]),
+                                                                player, enemy)
                                             # print(whose, 'whose')
                                             if whose == -2:
                                                 player.add_building(Building(
