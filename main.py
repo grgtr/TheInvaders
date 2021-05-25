@@ -94,6 +94,12 @@ def whose_build(build, player, enemy) -> int:
             return i
     return -2
 
+def number_unit(enemy_unit, enemy) -> int:
+    for i in range(len(enemy.units)):
+        if enemy_unit.coord_x == enemy.units[i].coord_x and enemy_unit.coord_y == enemy.units[i].coord_y:
+            return i
+    return -2
+
 
 def mouse_in(mouse_x, mouse_y) -> tuple[int, int]:
     """Поиск гекса по координатам мыши"""
@@ -270,11 +276,17 @@ def game(screen: pg.Surface):
         if MOVE_COUNTER % 2 == 0:
             enemy = player2
             player = player1
-            unit = player1.units[now]
+            try:
+                unit = player1.units[now]
+            except:
+                print('error')
         else:
             enemy = player1
             player = player2
-            unit = player2.units[now]
+            try:
+                unit = player2.units[now]
+            except:
+                print('error')
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
@@ -313,6 +325,10 @@ def game(screen: pg.Surface):
                         attacker = who_on(unit_hex_x, unit_hex_y, player.units)
                         enemy_unit = who_on(mouse_hex_x, mouse_hex_y, enemy.units)
                         attacker.attack(enemy_unit)
+                        if not enemy_unit.is_alive():
+                            position = number_unit(enemy_unit, enemy)
+                            if not ( position == -2 ):
+                                enemy.units.pop(position)
                         attack = False
                     else:
                         attack = False
@@ -473,7 +489,6 @@ def game(screen: pg.Surface):
                                         hex_x, hex_y = point_in(unit.coord_x, unit.coord_y)
                                         if field.field[hex_y][hex_x][0] == 'medieval':
                                             print(hex_x, hex_y, field.field[hex_y][hex_x][1])
-                                            # TODO fix
                                             whose = whose_build(Building(hex_x, hex_y,
                                                                          field.field[hex_y][hex_x][1]),
                                                                 player, enemy)

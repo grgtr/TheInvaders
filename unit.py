@@ -23,24 +23,24 @@ class Unit:
             self.max_hp = 150  # Максимальное количество здоровья
             self.health = 150  # Здоровье
             self.regen = 15
-            self.lvl = 0  # Уровень
+            self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
             self.mana = 0  # Количество маны
-            self.dmg = 50  # Урон
+            self.dmg = 60  # Урон
             self.defense = 0  # Защита
             self.max_moves = 2  # Максимальное количество очков перемещения
             self.moves = 2  # Количество очков перемещения
             self.image = pg.image.load('units/knight/standing/standing05.png')
         elif self.title == 'wizard':
-            self.max_hp = 100  # Максимальное количество здоровья
-            self.health = 100  # Здоровье
+            self.max_hp = 80  # Максимальное количество здоровья
+            self.health = 80  # Здоровье
             self.regen = 15
-            self.lvl = 0  # Уровень
+            self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 100  # Максимальное количество маны
             self.mana = 100  # Количество маны
-            self.dmg = 40  # Урон
+            self.dmg = 70  # Урон
             self.defense = 0  # Защита
             self.max_moves = 2  # Максимальное количество очков перемещения
             self.moves = 2  # Количество очков перемещения
@@ -49,7 +49,7 @@ class Unit:
             self.max_hp = 120  # Максимальное количество здоровья
             self.health = 120  # Здоровье
             self.regen = 15
-            self.lvl = 0  # Уровень
+            self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
             self.mana = 0  # Количество маны
@@ -57,7 +57,7 @@ class Unit:
             self.defense = 0  # Защита
             self.max_moves = 3  # Максимальное количество очков перемещения
             self.moves = 3  # Количество очков перемещения
-            pass
+            self.image = pg.image.load('units/elf/standing/elf_00.png')
         self.hex_size = (screen_size[0] // field_size[0],  # Размер гекса (120, 140)
                          screen_size[1] // field_size[1])
         self.image = pg.transform.scale(self.image, self.hex_size)  # Масштабирование
