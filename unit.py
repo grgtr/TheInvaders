@@ -89,7 +89,7 @@ class Unit:
         enemy.health -= self.dmg  # Нанесение урона
         self.moves = 0  # Обнуление очков перемещения
         if not enemy.is_alive():  # Если противник побежден
-            self.exp += 50 // self.lvl ** 0.5  # получение опыта
+            self.exp += 50 // (self.lvl + 1) ** 0.5  # Получение опыта
             self.check()  # Проверка на новый уровень
         else:  # Если противник не побежден
             self.health -= enemy.dmg // 2  # Нанесение ответного урона

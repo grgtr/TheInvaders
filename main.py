@@ -94,6 +94,7 @@ def whose_build(build, player, enemy) -> int:
             return i
     return -2
 
+
 def number_unit(enemy_unit, enemy) -> int:
     for i in range(len(enemy.units)):
         if enemy_unit.coord_x == enemy.units[i].coord_x and enemy_unit.coord_y == enemy.units[i].coord_y:
@@ -327,8 +328,15 @@ def game(screen: pg.Surface):
                         attacker.attack(enemy_unit)
                         if not enemy_unit.is_alive():
                             position = number_unit(enemy_unit, enemy)
-                            if not ( position == -2 ):
+                            if not (position == -2):
                                 enemy.units.pop(position)
+                                # Проверка на победу
+                                if (len(player2.units) == 0) and (len(player1.units) == 0):
+                                    game_over(screen, 'Ничья')
+                                elif len(player2.units) == 0:
+                                    game_over(screen, 'Выиграл игрок 1')
+                                elif len(player1.units) == 0:
+                                    game_over(screen, 'Выиграл игрок 2')
                         attack = False
                     else:
                         attack = False
@@ -667,6 +675,46 @@ def authors(screen: pg.Surface):
                                                                   True,
                                                                   colors['White']),
                     (width * 0.86, height * 0.9))
+
+        # Подтверждение отрисовки и ожидание
+        pg.display.flip()
+        pg.time.wait(10)
+
+
+def game_over(screen: pg.Surface, text: str):
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.MOUSEMOTION:
+                mouse_x, mouse_y = event.pos
+            if event.type == pg.QUIT:
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                keys = pg.key.get_pressed()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if (width * 0.375 < mouse_x < width * 0.625) \
+                        and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
+                    menu(screen)
+
+        # Отрисовка кадра
+        screen.fill(colors['DeepSkyBlue'])
+
+        # Отрисовка текста
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Игра окончена',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 200, height / 4))
+        screen.blit(pg.font.Font('english-script.ttf', 100).render(text,
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 250, height / 4 + 100))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка МЕНЮ
+                     (width * 0.375, height * 0.7, width / 4, height / 4), 10)
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
+                                                                   True,
+                                                                   colors['White']),
+                    (width * 0.41, height * 0.76))
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
