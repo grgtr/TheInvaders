@@ -18,7 +18,7 @@ colors = {
     'DarkGoldenRod': (184, 134, 11),
     'Tan': (210, 180, 140),
     'SaddleBrown': (139, 69, 19),
-    'светло жёлтый': (255, 217, 73),
+    'светло-жёлтый': (255, 217, 73),
     'MediumSpringGreen': (0, 250, 154),
     'Yellow': (255, 255, 0),
     'Red': (255, 0, 0),
@@ -27,6 +27,10 @@ colors = {
 }
 MOVE_COUNTER = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
+
+
+def fixed(numObj, digits=0):
+    return f"{numObj:.{digits}f}"
 
 
 def point_in(unit_x, unit_y) -> tuple[int, int]:
@@ -103,6 +107,76 @@ def number_unit(enemy_unit, enemy) -> int:
     return -2
 
 
+def defense(cell) -> int:
+    if cell[0] == 'medieval':
+        if cell[1] == 0:
+            return 0
+        elif cell[1] == 1:
+            return 0
+        elif cell[1] == 2:
+            return 1
+        elif cell[1] == 3:
+            return 1
+        elif cell[1] == 4:
+            return 0
+        elif cell[1] == 5:
+            return 1
+        elif cell[1] == 6:
+            return 1
+        elif cell[1] == 7:
+            return 3
+        elif cell[1] == 8:
+            return 0
+        elif cell[1] == 9:
+            return 2
+        elif cell[1] == 10:
+            return 2
+        elif cell[1] == 11:
+            return 0
+        elif cell[1] == 12:
+            return 0
+        elif cell[1] == 13:
+            return 0
+        elif cell[1] == 14:
+            return 1
+    if cell[0] == 'grass':
+        if cell[1] == 0:
+            return -2
+        elif cell[1] == 1:
+            return -1
+        elif cell[1] == 2:
+            return -1
+        elif cell[1] == 3:
+            return 1
+        elif cell[1] == 4:
+            return 1
+        elif cell[1] == 5:
+            return 1
+        elif cell[1] == 6:
+            return 1
+        elif cell[1] == 7:
+            return 1
+    if cell[0] == 'dirt':
+        if cell[1] == 0:
+            return -2
+        elif cell[1] == 1:
+            return -1
+        elif cell[1] == 2:
+            return -1
+        elif cell[1] == 3:
+            return 1
+        elif cell[1] == 4:
+            return 1
+        elif cell[1] == 5:
+            return 1
+        elif cell[1] == 6:
+            return 1
+        elif cell[1] == 7:
+            return 1
+        elif cell[1] == 8:
+            return 2
+
+
 def mouse_in(mouse_x, mouse_y) -> tuple[int, int]:
     """Поиск гекса по координатам мыши"""
     hy1 = (mouse_y - 35) // 100
@@ -147,21 +221,21 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
     :param sel_player: текущий игрок
     :return: поверхность с отрисованной панелью
     """
-    med_bld = ['Небольшая мельница. Приносит 5 золота в ход.',  # Подписи к клеткам
+    med_bld = ['Небольшая мельница. Приносит 5 золота в ход',  # Подписи к клеткам
                'Изящная арка',
-               'Кузница позволяет улучшать оружие и броню.',
+               'Кузница позволяет улучшать оружие',
                'Таверна.Ускоренная регенерация +10 hp',
                'Старое кладбище. Купите карту, чтобы найти сокровище',
                'Ферма. Приносит 10 золота в ход',
-               'Таверна наёмников. Можно нанять войска',
-               'Замок наёмников. Можно нанять усовершенствованные войска.',
-               'Местная пекарня. Приносит 10 золота в ход',
-               'Небольшой замок. Приносит 15 золота в ход',
-               'Королевский замок. Приносит 15 золота в ход, можно нанимать войска',
+               'Таверна наёмников. Можно нанимать рыцарей',
+               'Королевский замок. Можно нанимать рыцарей',
+               'Местная пекарня. Приносит 10 золота в ход. Можно нанять эльфов-лучников',
+               'Небольшой замок. Приносит 15 золота в ход. Можно нанять эльфов-лучников',
+               'Замок наёмников. Приносит 15 золота в ход. Можно нанимать рыцарей',
                'Сокровище. 50 золота, +5 к силе оружия',
                'Золотой рудник. Приносит 20 золота в ход',
-               'Башня магов. Можно нанять магов за золото и очки знаменитости',
-               'Лагерь разбойников',
+               'Башня магов. Можно нанять магов за золото',
+               'Лагерь разбойников. Можно захватить и нанять эльфов-лучников',
                ]
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
@@ -176,8 +250,8 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
     # Информация о выбранном юните
     text = ['Параметры выбранного юнита:',
             f'{sel_unit.title}',
-            f'Здоровье: {sel_unit.health}/{sel_unit.max_hp}',
-            f'Сила атаки: {sel_unit.dmg}',
+            f'Здоровье: {fixed(sel_unit.health, 2)}/{sel_unit.max_hp}',
+            f'Сила атаки: {fixed(sel_unit.dmg, 2)}',
             f'Защита: {sel_unit.defense}',
             f'Уровень: {sel_unit.lvl + 1}',
             f'Опыт: {sel_unit.exp}',
@@ -213,6 +287,17 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
                                                  True,
                                                  colors['MediumSpringGreen']),
                    (size[0] / 2, 10 + 25))
+        panel.blit(pg.font.Font(None, 25).render('Модификатор обороны: ' + str(
+                defense(field.field[hex_coord[1]][hex_coord[0]])),
+            True,
+            colors['MediumSpringGreen']),
+                   (size[0] / 2, 10 + 25 + 25))
+    else:
+        panel.blit(pg.font.Font(None, 25).render('Модификатор обороны: ' + str(
+            defense(field.field[hex_coord[1]][hex_coord[0]])),
+                                                 True,
+                                                 colors['MediumSpringGreen']),
+                   (size[0] / 2, 10 + 25))
     return panel
 
 
@@ -227,7 +312,7 @@ def button_draw(size: (int, int), form: str) -> pg.Surface:
     btn.fill(colors['SaddleBrown'])  # Фоновый цвет
     pg.draw.circle(btn, colors['DarkGoldenRod'], (size[1] // 2, size[1] // 2), size[1] // 2)  # Круг
     if form == 'next':
-        pg.draw.polygon(btn, colors['светло жёлтый'], [  # Треугольник
+        pg.draw.polygon(btn, colors['светло-жёлтый'], [  # Треугольник
             [size[1] // 3, size[1] // 4],
             [size[1] // 3, size[1] // 4 * 3],
             [size[1] // 4 * 3, size[1] // 2],
@@ -290,10 +375,17 @@ def game(screen: pg.Surface):
                 unit = player2.units[now]
             except:
                 print('error')
+        for i in player.units:
+            hex_x, hex_y = point_in(i.coord_x, i.coord_y)
+            i.defense = defense(field.field[hex_y][hex_x])
+        for i in enemy.units:
+            hex_x, hex_y = point_in(i.coord_x, i.coord_y)
+            i.defense = defense(field.field[hex_y][hex_x])
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
                 # print(mouse_x, mouse_y)
+
             if event.type == pg.QUIT:
                 is_run = False
                 sys.exit()
@@ -301,6 +393,8 @@ def game(screen: pg.Surface):
                 keys = pg.key.get_pressed()
                 if keys[pg.K_a] and keys[pg.K_m]:  # Чит на ходы и деньги
                     player.money += 1000
+                    unit.moves += 100
+                elif keys[pg.K_m]:
                     unit.moves += 100
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
@@ -331,6 +425,8 @@ def game(screen: pg.Surface):
                         if not enemy_unit.is_alive():
                             position = number_unit(enemy_unit, enemy)
                             if not (position == -2):
+                                attacker.coord_x = enemy_unit.coord_x
+                                attacker.coord_y = enemy_unit.coord_y
                                 enemy.units.pop(position)
                                 # Проверка на победу
                                 if (len(player2.units) == 0) and (len(player1.units) == 0):
@@ -339,6 +435,38 @@ def game(screen: pg.Surface):
                                     game_over(screen, 'Выиграл игрок 1')
                                 elif len(player1.units) == 0:
                                     game_over(screen, 'Выиграл игрок 2')
+                                hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
+                                if field.field[hex_y][hex_x][0] == 'medieval':
+                                    print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                    whose = whose_build(Building(hex_x, hex_y,
+                                                                 field.field[hex_y][hex_x][1]),
+                                                        player, enemy)
+                                    # print(whose, 'whose')
+                                    if whose == -2:
+                                        player.add_building(Building(
+                                            hex_x,
+                                            hex_y,
+                                            field.field[hex_y][hex_x][1]))
+                                        print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                    elif whose == -1:
+                                        pass
+                                    else:
+                                        print(player.buildings)
+                                        print(enemy.buildings)
+                                        player.add_building(Building(
+                                            hex_x,
+                                            hex_y,
+                                            field.field[hex_y][hex_x][1]))
+                                        # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                        enemy.buildings.pop(whose)
+
+                                    print(player.buildings)
+                                    print(enemy.buildings)
+                                    player.refresh()
+                                    player.money -= player.income
+                                    enemy.refresh()
+                                    enemy.money -= enemy.income
+
                         if not attacker.is_alive():
                             position = number_unit(attacker, player)
                             if not (position == -2):
@@ -433,7 +561,13 @@ def game(screen: pg.Surface):
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 200
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 10:
-                                    pass
+                                    if player.money >= 250:
+                                        unit.moves -= 1
+                                        coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
+                                        player.add_unit(
+                                            Unit('knight',
+                                                 coord_x, coord_y, screen_size, field_size))
+                                        player.money -= 250
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 11:
                                     if player.big_treasure == 0:
                                         unit.moves = 0
@@ -547,9 +681,11 @@ def game(screen: pg.Surface):
         field.draw(screen)
         for i in range(len(player1.units)):  # отображение юнитов игрока 1
             player1.units[i].draw(screen)
+            player1.units[i].check()
 
         for i in range(len(player2.units)):  # отображение юнитов игрока 2
             player2.units[i].draw(screen)
+            player2.units[i].check()
 
         panel_coord = (0, 750)  # Координаты панели управления
         # Отрисовка панели управления
@@ -561,41 +697,63 @@ def game(screen: pg.Surface):
             tmp_col = colors['DeepSkyBlue'], colors['Red']
         else:
             tmp_col = colors['Red'], colors['DeepSkyBlue']
+        for i in player.buildings:
+            cor_x, cor_y = center_hex(i.hex_x,i.hex_y)
+            pg.draw.polygon(screen, colors['светло-жёлтый'], [
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
+                (cor_x, cor_y - hex_size[1] // 2 - 4),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+                (cor_x, cor_y + hex_size[1] // 2 - 4),
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+            ], 4)
+
+        for i in enemy.buildings:
+            cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
+            pg.draw.polygon(screen, colors['Red'], [
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
+                (cor_x, cor_y - hex_size[1] // 2 - 4),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+                (cor_x, cor_y + hex_size[1] // 2 - 4),
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+            ], 4)
+
         for i in player1.units:
             pg.draw.polygon(screen, tmp_col[0], [
-                (i.coord_x - hex_size[0] / 2, i.coord_y - hex_size[1] / 4),
-                (i.coord_x, i.coord_y - hex_size[1] / 2),
-                (i.coord_x + hex_size[0] / 2, i.coord_y - hex_size[1] / 4),
-                (i.coord_x + hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
-                (i.coord_x, i.coord_y + hex_size[1] / 2),
-                (i.coord_x - hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
-            ], 3)
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 4),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
+                (i.coord_x, i.coord_y + hex_size[1] // 2 - 4),
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
+            ], 4)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
             pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         for i in player2.units:
             pg.draw.polygon(screen, tmp_col[1], [
-                (i.coord_x - hex_size[0] / 2, i.coord_y - hex_size[1] / 4),
-                (i.coord_x, i.coord_y - hex_size[1] / 2),
-                (i.coord_x + hex_size[0] / 2, i.coord_y - hex_size[1] / 4),
-                (i.coord_x + hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
-                (i.coord_x, i.coord_y + hex_size[1] / 2),
-                (i.coord_x - hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
-            ], 3)
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 4),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
+                (i.coord_x, i.coord_y + hex_size[1] // 2 - 4),
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
+            ], 4)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
             pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         # Отрисовка рамки выбранного юнита
         pg.draw.polygon(screen, colors['Yellow'], [
-            (unit.coord_x - hex_size[0] / 2, unit.coord_y - hex_size[1] / 4),
-            (unit.coord_x, unit.coord_y - hex_size[1] / 2),
-            (unit.coord_x + hex_size[0] / 2, unit.coord_y - hex_size[1] / 4),
-            (unit.coord_x + hex_size[0] / 2, unit.coord_y + hex_size[1] / 4),
-            (unit.coord_x, unit.coord_y + hex_size[1] / 2),
-            (unit.coord_x - hex_size[0] / 2, unit.coord_y + hex_size[1] / 4),
-        ], 3)
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 4),
+            (unit.coord_x, unit.coord_y - hex_size[1] // 2 - 4),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 4),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 4),
+            (unit.coord_x, unit.coord_y + hex_size[1] // 2 - 4),
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 4),
+        ], 4)
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()

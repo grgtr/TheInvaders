@@ -27,6 +27,7 @@ class Unit:
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
             self.mana = 0  # Количество маны
+            self.max_dmg = 60
             self.dmg = 60  # Урон
             self.defense = 0  # Защита
             self.max_moves = 2  # Максимальное количество очков перемещения
@@ -40,6 +41,7 @@ class Unit:
             self.exp = 0  # Опыт
             self.max_mana = 100  # Максимальное количество маны
             self.mana = 100  # Количество маны
+            self.max_dmg = 70
             self.dmg = 70  # Урон
             self.defense = 0  # Защита
             self.max_moves = 2  # Максимальное количество очков перемещения
@@ -53,6 +55,7 @@ class Unit:
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
             self.mana = 0  # Количество маны
+            self.max_dmg = 60
             self.dmg = 60  # Урон
             self.defense = 0  # Защита
             self.max_moves = 3  # Максимальное количество очков перемещения
@@ -86,13 +89,13 @@ class Unit:
         :return:
         """
         enemy: Unit
-        enemy.health -= self.dmg  # Нанесение урона
+        enemy.health -= self.dmg * ((100 + -1 * enemy.defense * 10) / 100)  # Нанесение урона
         self.moves = 0  # Обнуление очков перемещения
         if not enemy.is_alive():  # Если противник побежден
             self.exp += 50 // (self.lvl + 1) ** 0.5  # Получение опыта
             self.check()  # Проверка на новый уровень
         else:  # Если противник не побежден
-            self.health -= enemy.dmg // 2  # Нанесение ответного урона
+            self.health -= enemy.dmg * ((100 + enemy.defense * 10) / 100) // 2  # Нанесение ответного урона
             if not self.is_alive():  # Если юнит погиб
                 enemy.exp += 50 // enemy.lvl ** 0.5  # Получение противником опыта
                 enemy.check()  # Проверка на новый уровень
@@ -106,9 +109,10 @@ class Unit:
     def check(self) -> None:
         """Проверка на вшивость"""
         # Получен ли уровень
+        self.dmg = self.max_dmg * (self.health / self.max_hp)
         if self.exp >= 100:
             self.lvl += 1
-            self.exp = 0
+            self.exp -= 100
 
     def is_alive(self) -> bool:
         """Жив ли юнит"""
