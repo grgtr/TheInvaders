@@ -339,9 +339,21 @@ def game(screen: pg.Surface):
                                     game_over(screen, 'Выиграл игрок 1')
                                 elif len(player1.units) == 0:
                                     game_over(screen, 'Выиграл игрок 2')
+                        if not attacker.is_alive():
+                            position = number_unit(attacker, player)
+                            if not (position == -2):
+                                player.units.pop(position)
+                                # Проверка на победу
+                                if (len(player2.units) == 0) and (len(player1.units) == 0):
+                                    game_over(screen, 'Ничья')
+                                elif len(player2.units) == 0:
+                                    game_over(screen, 'Выиграл игрок 1')
+                                elif len(player1.units) == 0:
+                                    game_over(screen, 'Выиграл игрок 2')
                         attack = False
                     else:
                         attack = False
+
                 elif not attack:
                     # Нажатие на кнопку следующего хода
                     if (mouse_x - 1445) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
