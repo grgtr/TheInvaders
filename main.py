@@ -509,7 +509,7 @@ def game(screen: pg.Surface):
                                     if player.money >= 20:
                                         if player.step_forge + 2 <= MOVE_COUNTER:
                                             unit.moves = 0
-                                            unit.dmg += 5
+                                            unit.max_dmg += 5
                                             player.money -= 20
                                             player.step_forge = MOVE_COUNTER
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 3:
