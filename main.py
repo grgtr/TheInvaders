@@ -539,6 +539,10 @@ def game(screen: pg.Surface):
         for i in range(len(player2.units)):  # отображение юнитов игрока 2
             player2.units[i].draw(screen)
 
+        panel_coord = (0, 750)  # Координаты панели управления
+        # Отрисовка панели управления
+        screen.blit(panel_draw(panel_size, unit, player), panel_coord)
+
         # Отрисовка рамки вокруг вражеских и не ходивших юнитов
         # И полоски их здоровья
         if player == player1:
@@ -580,10 +584,6 @@ def game(screen: pg.Surface):
             (unit.coord_x, unit.coord_y + hex_size[1] / 2),
             (unit.coord_x - hex_size[0] / 2, unit.coord_y + hex_size[1] / 4),
         ], 3)
-
-        panel_coord = (0, 750)  # Координаты панели управления
-        # Отрисовка панели управления
-        screen.blit(panel_draw(panel_size, unit, player), panel_coord)
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
