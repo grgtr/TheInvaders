@@ -23,6 +23,7 @@ colors = {
     'Yellow': (255, 255, 0),
     'Red': (255, 0, 0),
     'DeepSkyBlue': (0, 191, 255),
+    'Lime': (0, 255, 0),
 }
 MOVE_COUNTER = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
@@ -207,10 +208,11 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
                                              colors['MediumSpringGreen']),
                (size[0] / 2, 10))
     hex_coord = point_in(sel_unit.coord_x, sel_unit.coord_y)
-    panel.blit(pg.font.Font(None, 25).render(med_bld[field.field[hex_coord[1]][hex_coord[0]][1]],
-                                             True,
-                                             colors['MediumSpringGreen']),
-               (size[0] / 2, 10 + 25))
+    if field.field[hex_coord[1]][hex_coord[0]][0] == 'medieval':  # Информация о клетке
+        panel.blit(pg.font.Font(None, 25).render(med_bld[field.field[hex_coord[1]][hex_coord[0]][1]],
+                                                 True,
+                                                 colors['MediumSpringGreen']),
+                   (size[0] / 2, 10 + 25))
     return panel
 
 
@@ -538,6 +540,7 @@ def game(screen: pg.Surface):
             player2.units[i].draw(screen)
 
         # Отрисовка рамки вокруг вражеских и не ходивших юнитов
+        # И полоски их здоровья
         if player == player1:
             tmp_col = colors['DeepSkyBlue'], colors['Red']
         else:
@@ -551,6 +554,10 @@ def game(screen: pg.Surface):
                 (i.coord_x, i.coord_y + hex_size[1] / 2),
                 (i.coord_x - hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
             ], 3)
+            # Рамка здоровья
+            pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
+            # Шкала здоровья
+            pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         for i in player2.units:
             pg.draw.polygon(screen, tmp_col[1], [
                 (i.coord_x - hex_size[0] / 2, i.coord_y - hex_size[1] / 4),
@@ -560,6 +567,10 @@ def game(screen: pg.Surface):
                 (i.coord_x, i.coord_y + hex_size[1] / 2),
                 (i.coord_x - hex_size[0] / 2, i.coord_y + hex_size[1] / 4),
             ], 3)
+            # Рамка здоровья
+            pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
+            # Шкала здоровья
+            pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         # Отрисовка рамки выбранного юнита
         pg.draw.polygon(screen, colors['Yellow'], [
             (unit.coord_x - hex_size[0] / 2, unit.coord_y - hex_size[1] / 4),

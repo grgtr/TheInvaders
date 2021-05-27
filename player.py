@@ -3,6 +3,7 @@
 
 class Player:
     """Класс игрока"""
+
     def __init__(self, money: int, units, buildings):
         self.money = money
         self.units = units
@@ -43,7 +44,6 @@ class Player:
             elif self.buildings[i].index == 12:
                 self.income += 20
         # print(self.income)
-
 
     def refresh(self) -> None:
         """Добавление денег после хода"""
