@@ -771,12 +771,15 @@ def menu(screen: pg.Surface) -> str:
                 if (width * 0.375 < mouse_x < width * 0.625) \
                         and (height / 4 < mouse_y < height * 0.625):  # Нажатие кнопки ИГРАТЬ
                     return 'game'
-                if (width * 0.375 < mouse_x < width * 0.625) \
+                elif (width * 0.375 < mouse_x < width * 0.625) \
                         and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
                     return 'quit'
-                if (width * 0.85 < mouse_x < width * 0.975) \
+                elif (width * 0.85 < mouse_x < width * 0.975) \
                         and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки АВТОРЫ
                     return 'authors'
+                elif (width * 0.1 < mouse_x < width * 0.27) \
+                        and (height * 0.9 < mouse_y < height * 0.96):  # Нажатие кнопки КАК ИГРАТЬ
+                    return 'how_to_play'
 
         # Отрисовка кадра
         screen.fill(colors['DeepSkyBlue'])
@@ -812,6 +815,13 @@ def menu(screen: pg.Surface) -> str:
                                                                   True,
                                                                   colors['White']),
                     (width * 0.86, height * 0.9))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка КАК ИГРАТЬ
+                     (width * 0.1, height * 0.9, width / 6, height / 16), 5)
+        screen.blit(pg.font.Font('english-script.ttf', 50).render('Как играть',
+                                                                  True,
+                                                                  colors['White']),
+                    (width * 0.11, height * 0.9))
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -898,6 +908,47 @@ def game_over(screen: pg.Surface, text: str):
         pg.time.wait(10)
 
 
+def how_to_play(screen: pg.Surface):
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.MOUSEMOTION:
+                mouse_x, mouse_y = event.pos
+            if event.type == pg.QUIT:
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                keys = pg.key.get_pressed()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if (width * 0.375 < mouse_x < width * 0.625) \
+                        and (height * 0.85 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
+                    return 'menu'
+
+        # Отрисовка кадра
+        screen.fill(colors['DeepSkyBlue'])
+
+        # Отрисовка текста
+        # TODO написать текст
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('ТЕКСТ',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 200, height / 4))
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('ТЕКСТ',
+                                                                   True,
+                                                                   colors['White']),
+                    (width / 2 - 250, height / 4 + 100))
+
+        pg.draw.rect(screen, colors['White'],  # Кнопка МЕНЮ
+                     (width * 0.375, height * 0.85, width / 4, height / 8), 10)
+        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
+                                                                   True,
+                                                                   colors['White']),
+                    (width * 0.41, height * 0.85))
+
+        # Подтверждение отрисовки и ожидание
+        pg.display.flip()
+        pg.time.wait(10)
+
+
 def main():
     """Главная функция кода"""
     pg.init()
@@ -916,6 +967,8 @@ def main():
             command = game_over(screen, 'Выиграл игрок 1')
         elif command == 'game_over_win2':
             command = game_over(screen, 'Выиграл игрок 2')
+        elif command == 'how_to_play':
+            command = how_to_play(screen)
 
 
 if __name__ == '__main__':
