@@ -232,7 +232,7 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
                'Местная пекарня. Приносит 10 золота в ход. Можно нанять эльфов-лучников',
                'Небольшой замок. Приносит 15 золота в ход. Можно нанять эльфов-лучников',
                'Замок наёмников. Приносит 15 золота в ход. Можно нанимать рыцарей',
-               'Сокровище. 50 золота, +5 к силе оружия',
+               'Сокровище. 250 золота, +15 к силе оружия',
                'Золотой рудник. Приносит 20 золота в ход',
                'Башня магов. Можно нанять магов за золото',
                'Лагерь разбойников. Можно захватить и нанять эльфов-лучников',
@@ -714,60 +714,60 @@ def game(screen: pg.Surface):
         for i in player.buildings:
             cor_x, cor_y = center_hex(i.hex_x,i.hex_y)
             pg.draw.polygon(screen, colors['светло-жёлтый'], [
-                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
-                (cor_x, cor_y - hex_size[1] // 2 - 4),
-                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
-                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
+                (cor_x, cor_y - hex_size[1] // 2 - 3),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
                 (cor_x, cor_y + hex_size[1] // 2 - 4),
-                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
-            ], 4)
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
+            ], 3)
 
         for i in enemy.buildings:
             cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
             pg.draw.polygon(screen, colors['Red'], [
-                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
                 (cor_x, cor_y - hex_size[1] // 2 - 4),
-                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 4),
-                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
                 (cor_x, cor_y + hex_size[1] // 2 - 4),
-                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 4),
-            ], 4)
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
+            ], 3)
 
         for i in player1.units:
             pg.draw.polygon(screen, tmp_col[0], [
-                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
-                (i.coord_x, i.coord_y - hex_size[1] // 2 - 4),
-                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
-                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 3),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
                 (i.coord_x, i.coord_y + hex_size[1] // 2 - 4),
-                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
-            ], 4)
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+            ], 3)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
             pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         for i in player2.units:
             pg.draw.polygon(screen, tmp_col[1], [
-                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
-                (i.coord_x, i.coord_y - hex_size[1] // 2 - 4),
-                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 4),
-                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
-                (i.coord_x, i.coord_y + hex_size[1] // 2 - 4),
-                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 4),
-            ], 4)
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 3),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+                (i.coord_x, i.coord_y + hex_size[1] // 2 - 3),
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+            ], 3)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
             pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         # Отрисовка рамки выбранного юнита
         pg.draw.polygon(screen, colors['Yellow'], [
-            (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 4),
-            (unit.coord_x, unit.coord_y - hex_size[1] // 2 - 4),
-            (unit.coord_x + hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 4),
-            (unit.coord_x + hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 4),
-            (unit.coord_x, unit.coord_y + hex_size[1] // 2 - 4),
-            (unit.coord_x - hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 4),
-        ], 4)
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 3),
+            (unit.coord_x, unit.coord_y - hex_size[1] // 2 - 3),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 3),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 3),
+            (unit.coord_x, unit.coord_y + hex_size[1] // 2 - 3),
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 3),
+        ], 3)
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
