@@ -392,7 +392,7 @@ def game(screen: pg.Surface):
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
-                print(mouse_x, mouse_y)#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                #print(mouse_x, mouse_y)
 
             if event.type == pg.QUIT:
                 is_run = False
@@ -786,60 +786,23 @@ def menu(screen: pg.Surface) -> str:
                 keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if (width * 0.375 < mouse_x < width * 0.625) \
-                        and (height / 4 < mouse_y < height * 0.625):  # Нажатие кнопки ИГРАТЬ
+                if (580 < mouse_x < 900) \
+                        and (355 < mouse_y < 465):  # Нажатие кнопки ИГРАТЬ
                     return 'game'
-                elif (width * 0.375 < mouse_x < width * 0.625) \
-                        and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
-                    return 'quit'
-                elif (width * 0.85 < mouse_x < width * 0.975) \
-                        and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки АВТОРЫ
-                    return 'authors'
-                elif (width * 0.1 < mouse_x < width * 0.27) \
-                        and (height * 0.9 < mouse_y < height * 0.96):  # Нажатие кнопки КАК ИГРАТЬ
+                elif (580 < mouse_x < 900) \
+                        and (480 < mouse_y < 585):  # Нажатие кнопки ПРАВИЛА
                     return 'how_to_play'
+                elif (580 < mouse_x < 900) \
+                        and (595 < mouse_y < 705):  # Нажатие кнопки АВТОРЫ
+                    return 'authors'
+                elif (580 < mouse_x < 900) \
+                        and (715 < mouse_y < 825):  # Нажатие кнопки ВЫХОД
+                    return 'quit'
 
-        # Отрисовка кадра
-        screen.fill(colors['DeepSkyBlue'])
-
-        # Отрисовка текста
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('TheInvaders',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 200, height / 8))
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 150, height / 4))
-
-        # Отрисовка кнопок меню
-        pg.draw.rect(screen, colors['White'],  # Кнопка ИГРАТЬ
-                     (width * 0.375, height * 0.375, width / 4, height / 4), 10)
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Играть',
-                                                                   True,
-                                                                   colors['White']),
-                    (width * 0.42, height * 0.42))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка ВЫХОД
-                     (width * 0.375, height * 0.7, width / 4, height / 4), 10)
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Выход',
-                                                                   True,
-                                                                   colors['White']),
-                    (width * 0.41, height * 0.76))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка АВТОРЫ
-                     (width * 0.85, height * 0.9, width / 8, height / 16), 5)
-        screen.blit(pg.font.Font('english-script.ttf', 50).render('Авторы',
-                                                                  True,
-                                                                  colors['White']),
-                    (width * 0.86, height * 0.9))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка КАК ИГРАТЬ
-                     (width * 0.1, height * 0.9, width / 6, height / 16), 5)
-        screen.blit(pg.font.Font('english-script.ttf', 50).render('Как играть',
-                                                                  True,
-                                                                  colors['White']),
-                    (width * 0.11, height * 0.9))
+        background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
+        screen.blit(background_img, background_img.get_rect(bottomright=(1500,980)))  # Отрисовка
+        menu_img = pg.image.load('background/main_menu1500x980.png')  # Загрузка картинки
+        screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -857,29 +820,14 @@ def authors(screen: pg.Surface):
                 keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if (width * 0.85 < mouse_x < width * 0.975) \
-                        and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки НАЗАД
+                if (580 < mouse_x < 900) \
+                        and (715 < mouse_y < 825):  # Нажатие кнопки НАЗАД
                     return 'menu'
 
-        # Отрисовка кадра
-        screen.fill(colors['DeepSkyBlue'])
-
-        # Отрисовка текста
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Авторы:',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 150, height / 4))
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Команда разработчиков Devastaters',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 8, height / 4 + 100))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка НАЗАД
-                     (width * 0.85, height * 0.9, width / 8, height / 16), 5)
-        screen.blit(pg.font.Font('english-script.ttf', 50).render('Назад',
-                                                                  True,
-                                                                  colors['White']),
-                    (width * 0.86, height * 0.9))
+        background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
+        screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        menu_img = pg.image.load('background/athers1500x980.png')  # Загрузка картинки
+        screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -937,30 +885,14 @@ def how_to_play(screen: pg.Surface):
                 keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if (width * 0.375 < mouse_x < width * 0.625) \
-                        and (height * 0.85 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
+                if (627 < mouse_x < 870) \
+                        and (890 < mouse_y < 970):  # Нажатие кнопки ВЫХОД
                     return 'menu'
 
-        # Отрисовка кадра
-        screen.fill(colors['DeepSkyBlue'])
-
-        # Отрисовка текста
-        # TODO написать текст
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('ТЕКСТ',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 200, height / 4))
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('ТЕКСТ',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 250, height / 4 + 100))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка МЕНЮ
-                     (width * 0.375, height * 0.85, width / 4, height / 8), 10)
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
-                                                                   True,
-                                                                   colors['White']),
-                    (width * 0.41, height * 0.85))
+        background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
+        screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        menu_img = pg.image.load('background/rulles1500x980.png')  # Загрузка картинки
+        screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
