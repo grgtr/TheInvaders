@@ -256,7 +256,6 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
             f'Уровень: {sel_unit.lvl + 1}',
             f'Опыт: {sel_unit.exp}',
             f'Очки перемещения: {sel_unit.moves}/{sel_unit.max_moves}',
-            f'Мана: {sel_unit.mana}/{sel_unit.max_mana}',
             ]
     for i, to_print in enumerate(text):
         panel.blit(pg.font.Font(None, 25).render(to_print,
@@ -428,66 +427,67 @@ def game(screen: pg.Surface):
                                    (unit_hex_x + 1, unit_hex_y + 1),
                                    (unit_hex_x, unit_hex_y + 1),
                                    (unit_hex_x - 1, unit_hex_y)]
-                    if any_on(mouse_hex_x, mouse_hex_y, enemy.units):
-                        attacker = who_on(unit_hex_x, unit_hex_y, player.units)
-                        enemy_unit = who_on(mouse_hex_x, mouse_hex_y, enemy.units)
-                        attacker.attack(enemy_unit)
-                        if not enemy_unit.is_alive():
-                            position = number_unit(enemy_unit, enemy)
-                            if not (position == -2):
-                                attacker.coord_x = enemy_unit.coord_x
-                                attacker.coord_y = enemy_unit.coord_y
-                                enemy.units.pop(position)
-                                # Проверка на победу
-                                if len(player2.units) == 0:
-                                    return 'game_over_win1'
-                                elif len(player1.units) == 0:
-                                    return 'game_over_win2'
-                                hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
-                                if field.field[hex_y][hex_x][0] == 'medieval':
-                                    print(hex_x, hex_y, field.field[hex_y][hex_x][1])
-                                    whose = whose_build(Building(hex_x, hex_y,
-                                                                 field.field[hex_y][hex_x][1]),
-                                                        player, enemy)
-                                    # print(whose, 'whose')
-                                    if whose == -2:
-                                        player.add_building(Building(
-                                            hex_x,
-                                            hex_y,
-                                            field.field[hex_y][hex_x][1]))
-                                        print(hex_x, hex_y, field.field[hex_y][hex_x][1])
-                                    elif whose == -1:
-                                        pass
-                                    else:
-                                        print(player.buildings)
-                                        print(enemy.buildings)
-                                        player.add_building(Building(
-                                            hex_x,
-                                            hex_y,
-                                            field.field[hex_y][hex_x][1]))
-                                        # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
-                                        enemy.buildings.pop(whose)
+                    for i in centres:
+                        if mouse_hex_x == i[0] and mouse_hex_y == i[1]:
+                            pass
+                            if any_on(mouse_hex_x, mouse_hex_y, enemy.units):
+                                attacker = who_on(unit_hex_x, unit_hex_y, player.units)
+                                enemy_unit = who_on(mouse_hex_x, mouse_hex_y, enemy.units)
+                                attacker.attack(enemy_unit)
+                                if not enemy_unit.is_alive():
+                                    position = number_unit(enemy_unit, enemy)
+                                    if not (position == -2):
+                                        attacker.coord_x = enemy_unit.coord_x
+                                        attacker.coord_y = enemy_unit.coord_y
+                                        enemy.units.pop(position)
+                                        # Проверка на победу
+                                        if len(player2.units) == 0:
+                                            return 'game_over_win1'
+                                        elif len(player1.units) == 0:
+                                            return 'game_over_win2'
+                                        hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
+                                        if field.field[hex_y][hex_x][0] == 'medieval':
+                                            print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                            whose = whose_build(Building(hex_x, hex_y,
+                                                                         field.field[hex_y][hex_x][1]),
+                                                                player, enemy)
+                                            # print(whose, 'whose')
+                                            if whose == -2:
+                                                player.add_building(Building(
+                                                    hex_x,
+                                                    hex_y,
+                                                    field.field[hex_y][hex_x][1]))
+                                                print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                            elif whose == -1:
+                                                pass
+                                            else:
+                                                print(player.buildings)
+                                                print(enemy.buildings)
+                                                player.add_building(Building(
+                                                    hex_x,
+                                                    hex_y,
+                                                    field.field[hex_y][hex_x][1]))
+                                                # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                                enemy.buildings.pop(whose)
 
-                                    print(player.buildings)
-                                    print(enemy.buildings)
-                                    player.refresh()
-                                    player.money -= player.income
-                                    enemy.refresh()
-                                    enemy.money -= enemy.income
+                                            print(player.buildings)
+                                            print(enemy.buildings)
+                                            player.refresh()
+                                            player.money -= player.income
+                                            enemy.refresh()
+                                            enemy.money -= enemy.income
 
-                        if not attacker.is_alive():
-                            position = number_unit(attacker, player)
-                            if not (position == -2):
-                                player.units.pop(position)
-                                # Проверка на победу
-                                if len(player2.units) == 0:
-                                    return 'game_over_win1'
-                                elif len(player1.units) == 0:
-                                    return 'game_over_win2'
-                        attack = False
-                    else:
-                        attack = False
+                                if not attacker.is_alive():
+                                    position = number_unit(attacker, player)
+                                    if not (position == -2):
+                                        player.units.pop(position)
+                                        # Проверка на победу
+                                        if len(player2.units) == 0:
+                                            return 'game_over_win1'
+                                        elif len(player1.units) == 0:
+                                            return 'game_over_win2'
 
+                    attack = False
                 elif not attack:
                     # Нажатие на кнопку следующего хода
                     if (mouse_x - 1445) ** 2 + (mouse_y - 922) ** 2 < 57 ** 2:
