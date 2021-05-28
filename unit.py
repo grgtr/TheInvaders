@@ -26,7 +26,6 @@ class Unit:
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
-            self.mana = 0  # Количество маны
             self.max_dmg = 60
             self.dmg = 60  # Урон
             self.defense = 0  # Защита
@@ -34,15 +33,13 @@ class Unit:
             self.moves = 2  # Количество очков перемещения
             self.image = pg.image.load('units/knight/standing/standing05.png')
         elif self.title == 'wizard':
-            self.max_hp = 80  # Максимальное количество здоровья
-            self.health = 80  # Здоровье
+            self.max_hp = 90  # Максимальное количество здоровья
+            self.health = 90  # Здоровье
             self.regen = 15
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
-            self.max_mana = 100  # Максимальное количество маны
-            self.mana = 100  # Количество маны
-            self.max_dmg = 70
-            self.dmg = 70  # Урон
+            self.max_dmg = 80
+            self.dmg = 80  # Урон
             self.defense = 0  # Защита
             self.max_moves = 2  # Максимальное количество очков перемещения
             self.moves = 2  # Количество очков перемещения
@@ -54,7 +51,6 @@ class Unit:
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
-            self.mana = 0  # Количество маны
             self.max_dmg = 60
             self.dmg = 60  # Урон
             self.defense = 0  # Защита
@@ -89,13 +85,14 @@ class Unit:
         :return:
         """
         enemy: Unit
-        enemy.health -= self.dmg * ((100 + -1 * enemy.defense * 10) / 100)  # Нанесение урона
+        enemy.health -= self.dmg * ((100 + -1 * enemy.defense * 20) / 100)  # Нанесение урона
         self.moves = 0  # Обнуление очков перемещения
         if not enemy.is_alive():  # Если противник побежден
             self.exp += 50 // (self.lvl + 1) ** 0.5  # Получение опыта
             self.check()  # Проверка на новый уровень
         else:  # Если противник не побежден
-            self.health -= enemy.dmg * ((100 + enemy.defense * 10) / 100) // 2  # Нанесение ответного урона
+            if self.title != 'elf':
+                self.health -= enemy.dmg * ((100 + enemy.defense * 20) / 100) // 2  # Нанесение ответного урона
             if not self.is_alive():  # Если юнит погиб
                 enemy.exp += 50 // enemy.lvl ** 0.5  # Получение противником опыта
                 enemy.check()  # Проверка на новый уровень
