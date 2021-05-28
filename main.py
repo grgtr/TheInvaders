@@ -255,55 +255,55 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
             f'Защита: {sel_unit.defense}',
             f'Уровень: {sel_unit.lvl + 1}',
             f'Опыт: {sel_unit.exp}',
-            f'Очки перемещения: {sel_unit.moves}/{sel_unit.max_moves}',
+            f'Очки действий: {sel_unit.moves}/{sel_unit.max_moves}',
             ]
     for i, to_print in enumerate(text):
-        panel.blit(pg.font.Font(None, 25).render(to_print,
+        panel.blit(pg.font.Font('11333.ttf', 25).render(to_print,
                                                  True,
-                                                 colors['MediumSpringGreen']),
+                                                 colors['светло-жёлтый']),
                    (10, 10 + i * 25))
     # Информация об игроке
-    panel.blit(pg.font.Font(None, 25).render(f'Игрок {MOVE_COUNTER % 2 + 1}',
+    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Игрок: {MOVE_COUNTER % 2 + 1}',
                                              True,
-                                             colors['MediumSpringGreen']),
+                                             colors['светло-жёлтый']),
                (size[0] / 3, 10))
-    panel.blit(pg.font.Font(None, 25).render(f'Монеты: {sel_player.money} квач',
+    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Монеты: {sel_player.money} квач',
                                              True,
-                                             colors['MediumSpringGreen']),
+                                             colors['светло-жёлтый']),
                (size[0] / 3, 10 + 25))
-    panel.blit(pg.font.Font(None, 25).render(f'Доход: {sel_player.income} квач в ход',
+    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Доход: {sel_player.income} квач в ход',
                                              True,
-                                             colors['MediumSpringGreen']),
+                                             colors['светло-жёлтый']),
                (size[0] / 3, 10 + 25 * 2))
     # Информация о текущей клетке
-    panel.blit(pg.font.Font(None, 25).render('Текущая клетка: ',
+    panel.blit(pg.font.Font('11333.ttf', 25).render('Текущая клетка: ',
                                              True,
-                                             colors['MediumSpringGreen']),
+                                             colors['светло-жёлтый']),
                (size[0] / 2, 10))
     hex_coord = point_in(sel_unit.coord_x, sel_unit.coord_y)
     if field.field[hex_coord[1]][hex_coord[0]][0] == 'medieval':  # Информация о клетке
-        panel.blit(pg.font.Font(None, 25).render(med_bld[field.field[hex_coord[1]][hex_coord[0]][1]],
+        panel.blit(pg.font.Font('11333.ttf', 25).render(med_bld[field.field[hex_coord[1]][hex_coord[0]][1]],
                                                  True,
-                                                 colors['MediumSpringGreen']),
+                                                 colors['светло-жёлтый']),
                    (size[0] / 2, 10 + 25))
-        panel.blit(pg.font.Font(None, 25).render('Модификатор обороны: ' + str(
+        panel.blit(pg.font.Font('11333.ttf', 25).render('Модификатор обороны: ' + str(
                 defense(field.field[hex_coord[1]][hex_coord[0]])),
             True,
-            colors['MediumSpringGreen']),
+            colors['светло-жёлтый']),
                    (size[0] / 2, 10 + 25 + 25))
         # 'Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото'
         # print(sel_player.treasure_map, med_bld[field.field[hex_coord[1]][hex_coord[0]][1]])
         if sel_player.treasure_map == 1 and field.field[hex_coord[1]][hex_coord[0]][1] == 3:
-            panel.blit(pg.font.Font(None, 25).render('Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото',
+            panel.blit(pg.font.Font('11333.ttf', 25).render('Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото',
                                                      True,
-                                                     colors['MediumSpringGreen']),
+                                                     colors['светло-жёлтый']),
                        (size[0] / 2, 10 + 25 + 25 + 25))
 
     else:
-        panel.blit(pg.font.Font(None, 25).render('Модификатор обороны: ' + str(
+        panel.blit(pg.font.Font('11333.ttf', 25).render('Модификатор обороны: ' + str(
             defense(field.field[hex_coord[1]][hex_coord[0]])),
                                                  True,
-                                                 colors['MediumSpringGreen']),
+                                                 colors['светло-жёлтый']),
                    (size[0] / 2, 10 + 25))
     return panel
 
@@ -324,10 +324,10 @@ def button_draw(size: (int, int), form: str) -> pg.Surface:
             [size[1] // 3, size[1] // 4 * 3],
             [size[1] // 4 * 3, size[1] // 2],
         ])
-        btn.blit(pg.font.Font(None, 20).render(f'Ход {MOVE_COUNTER}',  # Отрисовка счетчика хода
+        btn.blit(pg.font.Font('11333.ttf', 20).render(f'Ход: {MOVE_COUNTER}',  # Отрисовка счетчика хода
                                                True,
                                                colors['Black']),
-                 (size[0] // 2 - 25, size[1] - 40))
+                 (size[0] // 2 - 22, size[1] - 29))
     elif form == 'attack':
         img = pg.image.load('buttons/attack.png')  # Загрузка картинки
         img = pg.transform.scale(img, (int(size[1] / 1.4), int(size[1] / 1.5)))  # Масштабирование
