@@ -406,6 +406,7 @@ def game(screen: pg.Surface):
                 if keys[pg.K_w]:
                     print(7878)
             if event.type == pg.MOUSEBUTTONDOWN:
+                #if (True): return 'game_over_win2'  # Мгновенная победа второрго игрока
                 mouse_x, mouse_y = event.pos
                 try:
                     mouse_hex_x, mouse_hex_y = mouse_in(mouse_x, mouse_y)
@@ -826,8 +827,8 @@ def authors(screen: pg.Surface):
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
         screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
-        menu_img = pg.image.load('background/athers1500x980.png')  # Загрузка картинки
-        screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        athers_img = pg.image.load('background/athers1500x980.png')  # Загрузка картинки
+        screen.blit(athers_img, athers_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -845,29 +846,15 @@ def game_over(screen: pg.Surface, text: str):
                 keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if (width * 0.375 < mouse_x < width * 0.625) \
-                        and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
+                if (580 < mouse_x < 900) \
+                        and (715 < mouse_y < 825):  # Нажатие кнопки ВЫХОД
                     return 'menu'
 
-        # Отрисовка кадра
-        screen.fill(colors['DeepSkyBlue'])
-
-        # Отрисовка текста
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Игра окончена',
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 200, height / 4))
-        screen.blit(pg.font.Font('english-script.ttf', 100).render(text,
-                                                                   True,
-                                                                   colors['White']),
-                    (width / 2 - 250, height / 4 + 100))
-
-        pg.draw.rect(screen, colors['White'],  # Кнопка МЕНЮ
-                     (width * 0.375, height * 0.7, width / 4, height / 4), 10)
-        screen.blit(pg.font.Font('english-script.ttf', 100).render('Меню',
-                                                                   True,
-                                                                   colors['White']),
-                    (width * 0.41, height * 0.76))
+        background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
+        screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        if (text == '1'): game_over = pg.image.load('background/game_over_1_1500x980.png')  # Загрузка картинки 1
+        else: game_over = pg.image.load('background/game_over_2_1500x980.png')  # Загрузка картинки 2
+        screen.blit(game_over, game_over.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -891,8 +878,8 @@ def how_to_play(screen: pg.Surface):
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
         screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
-        menu_img = pg.image.load('background/rulles1500x980.png')  # Загрузка картинки
-        screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        rulles_img = pg.image.load('background/rulles1500x980.png')  # Загрузка картинки
+        screen.blit(rulles_img, rulles_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
