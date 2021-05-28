@@ -29,8 +29,8 @@ MOVE_COUNTER = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
 
 
-def fixed(numObj, digits=0):
-    return f"{numObj:.{digits}f}"
+def fixed(num_obj, digits=0):
+    return f"{num_obj:.{digits}f}"
 
 
 def point_in(unit_x, unit_y) -> tuple[int, int]:
@@ -429,12 +429,10 @@ def game(screen: pg.Surface):
                                 attacker.coord_y = enemy_unit.coord_y
                                 enemy.units.pop(position)
                                 # Проверка на победу
-                                if (len(player2.units) == 0) and (len(player1.units) == 0):
-                                    game_over(screen, 'Ничья')
-                                elif len(player2.units) == 0:
-                                    game_over(screen, 'Выиграл игрок 1')
+                                if len(player2.units) == 0:
+                                    return 'game_over_win1'
                                 elif len(player1.units) == 0:
-                                    game_over(screen, 'Выиграл игрок 2')
+                                    return 'game_over_win2'
                                 hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
                                 if field.field[hex_y][hex_x][0] == 'medieval':
                                     print(hex_x, hex_y, field.field[hex_y][hex_x][1])
@@ -472,12 +470,10 @@ def game(screen: pg.Surface):
                             if not (position == -2):
                                 player.units.pop(position)
                                 # Проверка на победу
-                                if (len(player2.units) == 0) and (len(player1.units) == 0):
-                                    game_over(screen, 'Ничья')
-                                elif len(player2.units) == 0:
-                                    game_over(screen, 'Выиграл игрок 1')
+                                if len(player2.units) == 0:
+                                    return 'game_over_win1'
                                 elif len(player1.units) == 0:
-                                    game_over(screen, 'Выиграл игрок 2')
+                                    return 'game_over_win2'
                         attack = False
                     else:
                         attack = False
@@ -835,7 +831,7 @@ def authors(screen: pg.Surface):
                 mouse_x, mouse_y = event.pos
                 if (width * 0.85 < mouse_x < width * 0.975) \
                         and (height * 0.9 < mouse_y < height * 0.9625):  # Нажатие кнопки НАЗАД
-                    return
+                    return 'menu'
 
         # Отрисовка кадра
         screen.fill(colors['DeepSkyBlue'])
@@ -875,7 +871,7 @@ def game_over(screen: pg.Surface, text: str):
                 mouse_x, mouse_y = event.pos
                 if (width * 0.375 < mouse_x < width * 0.625) \
                         and (height * 0.7 < mouse_y < height * 0.95):  # Нажатие кнопки ВЫХОД
-                    menu(screen)
+                    return 'menu'
 
         # Отрисовка кадра
         screen.fill(colors['DeepSkyBlue'])
@@ -906,14 +902,20 @@ def main():
     """Главная функция кода"""
     pg.init()
     screen = pg.display.set_mode((screen_size[0], screen_size[1]))
+    command = menu(screen)
     while True:
-        command = menu(screen)
+        if command == 'menu':
+            command = menu(screen)
         if command == 'game':
-            game(screen)
+            command = game(screen)
         elif command == 'authors':
-            authors(screen)
+            command = authors(screen)
         elif command == 'quit':
             sys.exit()
+        elif command == 'game_over_win1':
+            command = game_over(screen, 'Выиграл игрок 1')
+        elif command == 'game_over_win2':
+            command = game_over(screen, 'Выиграл игрок 2')
 
 
 if __name__ == '__main__':
