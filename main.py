@@ -292,6 +292,14 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
             True,
             colors['MediumSpringGreen']),
                    (size[0] / 2, 10 + 25 + 25))
+        # 'Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото'
+        # print(sel_player.treasure_map, med_bld[field.field[hex_coord[1]][hex_coord[0]][1]])
+        if sel_player.treasure_map == 1 and field.field[hex_coord[1]][hex_coord[0]][1] == 3:
+            panel.blit(pg.font.Font(None, 25).render('Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото',
+                                                     True,
+                                                     colors['MediumSpringGreen']),
+                       (size[0] / 2, 10 + 25 + 25 + 25))
+
     else:
         panel.blit(pg.font.Font(None, 25).render('Модификатор обороны: ' + str(
             defense(field.field[hex_coord[1]][hex_coord[0]])),
@@ -396,6 +404,8 @@ def game(screen: pg.Surface):
                     unit.moves += 100
                 elif keys[pg.K_m]:
                     unit.moves += 100
+                if keys[pg.K_w]:
+                    print(7878)
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 try:
@@ -511,15 +521,17 @@ def game(screen: pg.Surface):
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 3:
                                     if player.money >= 10:
                                         if player.chet_step + 1 <= MOVE_COUNTER:
-                                            unit.moves -= 1
-                                            player.money -= 10
+                                            if unit.health - 10 <= unit.max_hp:
+                                                unit.health += 30
+                                                player.money -= 10
+                                                unit.moves -= 1
                                             player.chet_step = MOVE_COUNTER
                                             if player.treasure_map == 0:
-                                                # TODO say u find a map
+                                                # print('treasure_map++')
                                                 player.treasure_map = 1
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 4:
                                     if player.treasure_map == 1:
-                                        player.money += 50
+                                        player.money += 250
                                         player.treasure_map = -1
 
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 5:
@@ -567,7 +579,7 @@ def game(screen: pg.Surface):
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 11:
                                     if player.big_treasure == 0:
                                         unit.moves = 0
-                                        unit.dmg += 15
+                                        unit.max_dmg += 15
                                         player.money += 250
                                         player.big_treasure = -1
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 12:
@@ -581,7 +593,13 @@ def game(screen: pg.Surface):
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 100
                                 elif field.field[unit_hex_y][unit_hex_x][1] == 14:
-                                    pass
+                                    if player.money >= 250:
+                                        unit.moves -= 1
+                                        coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
+                                        player.add_unit(
+                                            Unit('elf',
+                                                 coord_x, coord_y, screen_size, field_size))
+                                        player.money -= 200
 
                     # Нажатие на кнопку переключения юнита
                     elif (mouse_x - 1330) ** 2 + (mouse_y - 817) ** 2 < 57 ** 2:
