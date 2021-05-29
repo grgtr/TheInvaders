@@ -117,6 +117,11 @@ class Unit:
         if self.exp >= 100:
             self.lvl += 1
             self.exp -= 100
+            self.health += 50
+            self.max_hp += 10
+            if self.health > self.max_hp:
+                self.health = self.max_hp
+
 
     def is_alive(self) -> bool:
         """Жив ли юнит"""
