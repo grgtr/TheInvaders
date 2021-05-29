@@ -46,13 +46,13 @@ class Unit:
             self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
         elif self.title == 'elf':
             self.max_hp = 120  # Максимальное количество здоровья
-            self.health = 120  # Здоровье
+            self.health = 100  # Здоровье
             self.regen = 15
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
-            self.max_dmg = 60
-            self.dmg = 60  # Урон
+            self.max_dmg = 50
+            self.dmg = 50  # Урон
             self.defense = 0  # Защита
             self.max_moves = 3  # Максимальное количество очков перемещения
             self.moves = 3  # Количество очков перемещения

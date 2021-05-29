@@ -11,7 +11,7 @@ field_size = 25, 14
 hex_size = 60, 70  # Размер гексов (6:7)
 screen_size = width, height = field_size[0] * hex_size[0], \
                               field_size[1] * hex_size[1]  # Размер экрана
-field: Field
+FIELD: Field
 colors = {
     'White': (255, 255, 255),
     'Black': (0, 0, 0),
@@ -24,12 +24,16 @@ colors = {
     'Red': (255, 0, 0),
     'DeepSkyBlue': (0, 191, 255),
     'Lime': (0, 255, 0),
+    'Salmon': (250, 128, 114),
+    'LightBlue': (173, 216, 230),
 }
+FONT = 'font.ttf'
 MOVE_COUNTER = 0  # Счетчик ходов
 panel_size = (screen_size[0], 230)  # Размер панели управления
 
 
 def fixed(num_obj, digits=0):
+    """Фиксированной количество знаков после запятой"""
     return f"{num_obj:.{digits}f}"
 
 
@@ -82,6 +86,7 @@ def any_on(coord_x, coord_y, units) -> bool:
 
 
 def how_much_on(hex_x, hex_y, units) -> int:
+    """Проверка количества юнитов на клетке"""
     count = 0
     for i in range(len(units)):
         uhx, uhy = point_in(units[i].coord_x, units[i].coord_y)
@@ -91,6 +96,7 @@ def how_much_on(hex_x, hex_y, units) -> int:
 
 
 def whose_build(build, player, enemy) -> int:
+    """Определение, какому игроку принадлежит постройка"""
     for i in player.buildings:
         if i.hex_x == build.hex_x and i.hex_y == build.hex_y:
             return -1
@@ -101,80 +107,84 @@ def whose_build(build, player, enemy) -> int:
 
 
 def number_unit(enemy_unit, enemy) -> int:
+    """Поиск юнита по координатам"""
     for i in range(len(enemy.units)):
-        if enemy_unit.coord_x == enemy.units[i].coord_x and enemy_unit.coord_y == enemy.units[i].coord_y:
+        if (enemy_unit.coord_x == enemy.units[i].coord_x
+                and enemy_unit.coord_y == enemy.units[i].coord_y):
             return i
     return -2
 
 
 def defense(cell) -> int:
+    """Модификатор защиты клетки"""
     if cell[0] == 'medieval':
         if cell[1] == 0:
             return 0
-        elif cell[1] == 1:
+        if cell[1] == 1:
             return 0
-        elif cell[1] == 2:
+        if cell[1] == 2:
             return 1
-        elif cell[1] == 3:
+        if cell[1] == 3:
             return 1
-        elif cell[1] == 4:
+        if cell[1] == 4:
             return 0
-        elif cell[1] == 5:
+        if cell[1] == 5:
             return 1
-        elif cell[1] == 6:
+        if cell[1] == 6:
             return 1
-        elif cell[1] == 7:
+        if cell[1] == 7:
             return 3
-        elif cell[1] == 8:
+        if cell[1] == 8:
             return 0
-        elif cell[1] == 9:
+        if cell[1] == 9:
             return 2
-        elif cell[1] == 10:
+        if cell[1] == 10:
             return 2
-        elif cell[1] == 11:
+        if cell[1] == 11:
             return 0
-        elif cell[1] == 12:
+        if cell[1] == 12:
             return 0
-        elif cell[1] == 13:
+        if cell[1] == 13:
             return 0
-        elif cell[1] == 14:
+        if cell[1] == 14:
             return 1
     if cell[0] == 'grass':
         if cell[1] == 0:
             return -2
-        elif cell[1] == 1:
+        if cell[1] == 1:
             return -1
-        elif cell[1] == 2:
+        if cell[1] == 2:
             return -1
-        elif cell[1] == 3:
+        if cell[1] == 3:
             return 1
-        elif cell[1] == 4:
+        if cell[1] == 4:
             return 1
-        elif cell[1] == 5:
+        if cell[1] == 5:
             return 1
-        elif cell[1] == 6:
+        if cell[1] == 6:
             return 1
-        elif cell[1] == 7:
+        if cell[1] == 7:
             return 1
     if cell[0] == 'dirt':
         if cell[1] == 0:
             return -2
-        elif cell[1] == 1:
+        if cell[1] == 1:
             return -1
-        elif cell[1] == 2:
+        if cell[1] == 2:
             return -1
-        elif cell[1] == 3:
+        if cell[1] == 3:
             return 1
-        elif cell[1] == 4:
+        if cell[1] == 4:
             return 1
-        elif cell[1] == 5:
+        if cell[1] == 5:
             return 1
-        elif cell[1] == 6:
+        if cell[1] == 6:
             return 1
-        elif cell[1] == 7:
+        if cell[1] == 7:
             return 1
-        elif cell[1] == 8:
+        if cell[1] == 8:
             return 2
+    return 0
 
 
 def mouse_in(mouse_x, mouse_y) -> tuple[int, int]:
@@ -223,19 +233,19 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
     """
     med_bld = ['Небольшая мельница. Приносит 5 золота в ход',  # Подписи к клеткам
                'Изящная арка',
-               'Кузница позволяет улучшать оружие',
+               'Кузница позволяет улучшать оружие за 50 квач',
                'Таверна.Ускоренная регенерация +10 hp',
                'Старое кладбище. Купите карту, чтобы найти сокровище',
-               'Ферма. Приносит 10 золота в ход',
-               'Таверна наёмников. Можно нанимать рыцарей',
-               'Королевский замок. Можно нанимать рыцарей, даёт монеты',
-               'Местная пекарня. Приносит 10 золота в ход. Можно нанять эльфов-лучников',
-               'Небольшой замок. Приносит 15 золота в ход. Можно нанять эльфов-лучников',
-               'Замок наёмников. Приносит 15 золота в ход. Можно нанимать рыцарей',
+               'Ферма. Приносит 10 квач в ход',
+               'Таверна наёмников. Можно нанимать рыцарей за 250 квач',
+               'Королевский замок. Можно нанимать рыцарей за 250 квач, даёт монеты',
+               'Местная пекарня. Приносит 10 квач в ход. Можно нанять эльфов-лучников за 250 квач',
+               'Небольшой замок. Приносит 15 квач в ход. Можно нанять эльфов-лучников за 250 квач',
+               'Замок наёмников. Приносит 15 квач в ход. Можно нанимать рыцарей за 250 квач',
                'Сокровище. 250 золота, +15 к силе оружия',
-               'Золотой рудник. Приносит 20 золота в ход',
-               'Башня магов. Можно нанять магов за золото',
-               'Лагерь разбойников. Можно захватить и нанять эльфов-лучников, даёт монеты',
+               'Золотой рудник. Приносит 20 квач в ход',
+               'Башня магов. Можно нанять магов за 300 квач',
+               'Лагерь разбойников. Можно захватить и нанять эльфов-лучников за 250 квач',
                ]
     panel = pg.Surface(size)
     panel.fill(colors['SaddleBrown'])  # Заливка фона
@@ -258,53 +268,55 @@ def panel_draw(size: (int, int), sel_unit: Unit, sel_player: Player) -> pg.Surfa
             f'Очки действий: {sel_unit.moves}/{sel_unit.max_moves}',
             ]
     for i, to_print in enumerate(text):
-        panel.blit(pg.font.Font('11333.ttf', 25).render(to_print,
+        panel.blit(pg.font.Font(FONT, 25).render(to_print,
                                                  True,
                                                  colors['светло-жёлтый']),
                    (10, 10 + i * 25))
     # Информация об игроке
-    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Игрок: {MOVE_COUNTER % 2 + 1}',
+    panel.blit(pg.font.Font(FONT, 25).render(f'Игрок: {MOVE_COUNTER % 2 + 1}',
                                              True,
                                              colors['светло-жёлтый']),
-               (size[0] / 3, 10))
-    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Монеты: {sel_player.money} квач',
+               (size[0] / 4, 10 + 25 * 5))
+    panel.blit(pg.font.Font(FONT, 25).render(f'Монеты: {sel_player.money} квач',
                                              True,
                                              colors['светло-жёлтый']),
-               (size[0] / 3, 10 + 25))
-    panel.blit(pg.font.Font('11333.ttf', 25).render(f'Доход: {sel_player.income} квач в ход',
+               (size[0] / 4, 10 + 25 * 6))
+    panel.blit(pg.font.Font(FONT, 25).render(f'Доход: {sel_player.income} квач в ход',
                                              True,
                                              colors['светло-жёлтый']),
-               (size[0] / 3, 10 + 25 * 2))
+               (size[0] / 4, 10 + 25 * 7))
     # Информация о текущей клетке
-    panel.blit(pg.font.Font('11333.ttf', 25).render('Текущая клетка: ',
+    panel.blit(pg.font.Font(FONT, 25).render('Текущая клетка: ',
                                              True,
                                              colors['светло-жёлтый']),
-               (size[0] / 2, 10))
+               (size[0] / 4, 10))
     hex_coord = point_in(sel_unit.coord_x, sel_unit.coord_y)
-    if field.field[hex_coord[1]][hex_coord[0]][0] == 'medieval':  # Информация о клетке
-        panel.blit(pg.font.Font('11333.ttf', 25).render(med_bld[field.field[hex_coord[1]][hex_coord[0]][1]],
-                                                 True,
-                                                 colors['светло-жёлтый']),
-                   (size[0] / 2, 10 + 25))
-        panel.blit(pg.font.Font('11333.ttf', 25).render('Модификатор обороны: ' + str(
-                defense(field.field[hex_coord[1]][hex_coord[0]])),
+    # Информация о клетке
+    if FIELD.field[hex_coord[1]][hex_coord[0]][0] == 'medieval':
+        panel.blit(pg.font.Font(FONT, 25).render(
+            med_bld[FIELD.field[hex_coord[1]][hex_coord[0]][1]],
             True,
             colors['светло-жёлтый']),
-                   (size[0] / 2, 10 + 25 + 25))
-        # 'Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото'
-        # print(sel_player.treasure_map, med_bld[field.field[hex_coord[1]][hex_coord[0]][1]])
-        if sel_player.treasure_map == 1 and field.field[hex_coord[1]][hex_coord[0]][1] == 3:
-            panel.blit(pg.font.Font('11333.ttf', 25).render('Вы нашли карту сокровищ. В таверне говорят, что на местном кладбище спрятано золото',
-                                                     True,
-                                                     colors['светло-жёлтый']),
-                       (size[0] / 2, 10 + 25 + 25 + 25))
-
-    else:
-        panel.blit(pg.font.Font('11333.ttf', 25).render('Модификатор обороны: ' + str(
-            defense(field.field[hex_coord[1]][hex_coord[0]])),
+            (size[0] / 4, 10 + 25))
+        panel.blit(pg.font.Font(FONT, 25).render('Модификатор обороны: ' + str(
+            defense(FIELD.field[hex_coord[1]][hex_coord[0]])),
                                                  True,
                                                  colors['светло-жёлтый']),
-                   (size[0] / 2, 10 + 25))
+                   (size[0] / 4, 10 + 25 + 25))
+        if sel_player.treasure_map == 1 and FIELD.field[hex_coord[1]][hex_coord[0]][1] == 3:
+            panel.blit(pg.font.Font(FONT, 25).render(
+                'Вы нашли карту сокровищ. В таверне говорят, '
+                'что на местном кладбище спрятано золото',
+                True,
+                colors['светло-жёлтый']),
+                (size[0] / 4, 10 + 25 + 25 + 25))
+
+    else:
+        panel.blit(pg.font.Font(FONT, 25).render('Модификатор обороны: ' + str(
+            defense(FIELD.field[hex_coord[1]][hex_coord[0]])),
+                                                 True,
+                                                 colors['светло-жёлтый']),
+                   (size[0] / 4, 10 + 25))
     return panel
 
 
@@ -324,7 +336,7 @@ def button_draw(size: (int, int), form: str) -> pg.Surface:
             [size[1] // 3, size[1] // 4 * 3],
             [size[1] // 4 * 3, size[1] // 2],
         ])
-        btn.blit(pg.font.Font('11333.ttf', 20).render(f'Ход: {MOVE_COUNTER}',  # Отрисовка счетчика хода
+        btn.blit(pg.font.Font(FONT, 20).render(f'Ход: {MOVE_COUNTER}',  # Отрисовка счетчика хода
                                                True,
                                                colors['Black']),
                  (size[0] // 2 - 22, size[1] - 29))
@@ -360,9 +372,9 @@ def game(screen: pg.Surface):
         Unit('knight', int(24 * hex_size[0] - hex_size[0] / 2),
              int(hex_size[1] / 2), screen_size, field_size))
     # Загрузка данных
-    global field
-    field = Field(screen_size, field_size)
-    field.gen_given_field()
+    global FIELD
+    FIELD = Field(screen_size, field_size)
+    FIELD.gen_given_field()
     now = 0
     attack = False
     while is_run:
@@ -373,25 +385,24 @@ def game(screen: pg.Surface):
             player = player1
             try:
                 unit = player1.units[now]
-            except:
+            except IndexError:
                 print('error')
         else:
             enemy = player1
             player = player2
             try:
                 unit = player2.units[now]
-            except:
+            except IndexError:
                 print('error')
         for i in player.units:
             hex_x, hex_y = point_in(i.coord_x, i.coord_y)
-            i.defense = defense(field.field[hex_y][hex_x])
+            i.defense = defense(FIELD.field[hex_y][hex_x])
         for i in enemy.units:
             hex_x, hex_y = point_in(i.coord_x, i.coord_y)
-            i.defense = defense(field.field[hex_y][hex_x])
+            i.defense = defense(FIELD.field[hex_y][hex_x])
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
-                #print(mouse_x, mouse_y)
 
             if event.type == pg.QUIT:
                 is_run = False
@@ -406,7 +417,6 @@ def game(screen: pg.Surface):
                 if keys[pg.K_w]:
                     print(7878)
             if event.type == pg.MOUSEBUTTONDOWN:
-                #if (True): return 'game_over_win2'  # Мгновенная победа второрго игрока
                 mouse_x, mouse_y = event.pos
                 try:
                     mouse_hex_x, mouse_hex_y = mouse_in(mouse_x, mouse_y)
@@ -430,35 +440,34 @@ def game(screen: pg.Surface):
                                    (unit_hex_x - 1, unit_hex_y)]
                     for i in centres:
                         if mouse_hex_x == i[0] and mouse_hex_y == i[1]:
-                            pass
                             if any_on(mouse_hex_x, mouse_hex_y, enemy.units):
                                 attacker = who_on(unit_hex_x, unit_hex_y, player.units)
                                 enemy_unit = who_on(mouse_hex_x, mouse_hex_y, enemy.units)
                                 attacker.attack(enemy_unit)
                                 if not enemy_unit.is_alive():
                                     position = number_unit(enemy_unit, enemy)
-                                    if not (position == -2):
+                                    if position != -2:
                                         attacker.coord_x = enemy_unit.coord_x
                                         attacker.coord_y = enemy_unit.coord_y
                                         enemy.units.pop(position)
                                         # Проверка на победу
                                         if len(player2.units) == 0:
                                             return 'game_over_win1'
-                                        elif len(player1.units) == 0:
+                                        if len(player1.units) == 0:
                                             return 'game_over_win2'
                                         hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
-                                        if field.field[hex_y][hex_x][0] == 'medieval':
-                                            print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                        if FIELD.field[hex_y][hex_x][0] == 'medieval':
+                                            print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             whose = whose_build(Building(hex_x, hex_y,
-                                                                         field.field[hex_y][hex_x][1]),
+                                                                         FIELD.field[hex_y][hex_x][1]),
                                                                 player, enemy)
                                             # print(whose, 'whose')
                                             if whose == -2:
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
-                                                    field.field[hex_y][hex_x][1]))
-                                                print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                                    FIELD.field[hex_y][hex_x][1]))
+                                                print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             elif whose == -1:
                                                 pass
                                             else:
@@ -467,7 +476,7 @@ def game(screen: pg.Surface):
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
-                                                    field.field[hex_y][hex_x][1]))
+                                                    FIELD.field[hex_y][hex_x][1]))
                                                 # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
                                                 enemy.buildings.pop(whose)
 
@@ -480,12 +489,12 @@ def game(screen: pg.Surface):
 
                                 if not attacker.is_alive():
                                     position = number_unit(attacker, player)
-                                    if not (position == -2):
+                                    if position != -2:
                                         player.units.pop(position)
                                         # Проверка на победу
                                         if len(player2.units) == 0:
                                             return 'game_over_win1'
-                                        elif len(player1.units) == 0:
+                                        if len(player1.units) == 0:
                                             return 'game_over_win2'
 
                     attack = False
@@ -507,19 +516,19 @@ def game(screen: pg.Surface):
                     # Нажатие на кнопку trade
                     elif (mouse_x - 1445) ** 2 + (mouse_y - 817) ** 2 < 57 ** 2:
                         if unit.moves > 0:
-                            if field.field[unit_hex_y][unit_hex_x][0] == 'medieval':
-                                if field.field[unit_hex_y][unit_hex_x][1] == 0:
+                            if FIELD.field[unit_hex_y][unit_hex_x][0] == 'medieval':
+                                if FIELD.field[unit_hex_y][unit_hex_x][1] == 0:
                                     pass
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 1:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 1:
                                     pass
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 2:
-                                    if player.money >= 20:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 2:  # Кузница
+                                    if player.money >= 50:
                                         if player.step_forge + 2 <= MOVE_COUNTER:
                                             unit.moves = 0
                                             unit.max_dmg += 5
-                                            player.money -= 20
+                                            player.money -= 50
                                             player.step_forge = MOVE_COUNTER
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 3:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 3:
                                     if player.money >= 10:
                                         if player.chet_step + 1 <= MOVE_COUNTER:
                                             if unit.health - 10 <= unit.max_hp:
@@ -530,14 +539,14 @@ def game(screen: pg.Surface):
                                             if player.treasure_map == 0:
                                                 # print('treasure_map++')
                                                 player.treasure_map = 1
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 4:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 4:
                                     if player.treasure_map == 1:
                                         player.money += 250
                                         player.treasure_map = -1
 
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 5:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 5:
                                     pass
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 6:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 6:
                                     if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -545,7 +554,7 @@ def game(screen: pg.Surface):
                                             Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 250
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 7:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 7:
                                     if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -553,7 +562,7 @@ def game(screen: pg.Surface):
                                             Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 250
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 8:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 8:
                                     if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -561,7 +570,7 @@ def game(screen: pg.Surface):
                                             Unit('elf',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 200
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 9:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 9:
                                     if player.money >= 200:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -569,7 +578,7 @@ def game(screen: pg.Surface):
                                             Unit('elf',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 200
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 10:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 10:
                                     if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -577,15 +586,15 @@ def game(screen: pg.Surface):
                                             Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 250
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 11:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 11:
                                     if player.big_treasure == 0:
                                         unit.moves = 0
                                         unit.max_dmg += 15
                                         player.money += 250
                                         player.big_treasure = -1
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 12:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 12:
                                     pass
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 13:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 13:
                                     if player.money >= 300:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -593,7 +602,7 @@ def game(screen: pg.Surface):
                                             Unit('wizard',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 100
-                                elif field.field[unit_hex_y][unit_hex_x][1] == 14:
+                                elif FIELD.field[unit_hex_y][unit_hex_x][1] == 14:
                                     if player.money >= 250:
                                         unit.moves -= 1
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
@@ -658,18 +667,18 @@ def game(screen: pg.Surface):
                                         unit.coord_y = coord_y
                                         unit.moves -= 1
                                         hex_x, hex_y = point_in(unit.coord_x, unit.coord_y)
-                                        if field.field[hex_y][hex_x][0] == 'medieval':
-                                            print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                        if FIELD.field[hex_y][hex_x][0] == 'medieval':
+                                            print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             whose = whose_build(Building(hex_x, hex_y,
-                                                                         field.field[hex_y][hex_x][1]),
+                                                                         FIELD.field[hex_y][hex_x][1]),
                                                                 player, enemy)
                                             # print(whose, 'whose')
                                             if whose == -2:
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
-                                                    field.field[hex_y][hex_x][1]))
-                                                print(hex_x, hex_y, field.field[hex_y][hex_x][1])
+                                                    FIELD.field[hex_y][hex_x][1]))
+                                                print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             elif whose == -1:
                                                 pass
                                             else:
@@ -678,7 +687,7 @@ def game(screen: pg.Surface):
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
-                                                    field.field[hex_y][hex_x][1]))
+                                                    FIELD.field[hex_y][hex_x][1]))
                                                 # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
                                                 enemy.buildings.pop(whose)
 
@@ -693,7 +702,7 @@ def game(screen: pg.Surface):
 
         # Отрисовка кадра
         screen.fill((255, 255, 255))  # Белый фон, рисуется первым!
-        field.draw(screen)
+        FIELD.draw(screen)
         for i in range(len(player1.units)):  # отображение юнитов игрока 1
             player1.units[i].draw(screen)
             player1.units[i].check()
@@ -707,14 +716,15 @@ def game(screen: pg.Surface):
         screen.blit(panel_draw(panel_size, unit, player), panel_coord)
 
         # Отрисовка рамки вокруг вражеских и не ходивших юнитов
-        # И полоски их здоровья
+        # Полоски их здоровья
+        # И зданий
         if player == player1:
             tmp_col = colors['DeepSkyBlue'], colors['Red']
         else:
             tmp_col = colors['Red'], colors['DeepSkyBlue']
         for i in player.buildings:
-            cor_x, cor_y = center_hex(i.hex_x,i.hex_y)
-            pg.draw.polygon(screen, colors['светло-жёлтый'], [
+            cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
+            pg.draw.polygon(screen, colors['LightBlue'], [
                 (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
                 (cor_x, cor_y - hex_size[1] // 2 - 3),
                 (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
@@ -725,7 +735,7 @@ def game(screen: pg.Surface):
 
         for i in enemy.buildings:
             cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
-            pg.draw.polygon(screen, colors['Red'], [
+            pg.draw.polygon(screen, colors['Salmon'], [
                 (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
                 (cor_x, cor_y - hex_size[1] // 2 - 4),
                 (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
@@ -746,7 +756,8 @@ def game(screen: pg.Surface):
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
-            pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
+            pg.draw.rect(screen, colors['Lime'],
+                         (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         for i in player2.units:
             pg.draw.polygon(screen, tmp_col[1], [
                 (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
@@ -759,7 +770,8 @@ def game(screen: pg.Surface):
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
             # Шкала здоровья
-            pg.draw.rect(screen, colors['Lime'], (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
+            pg.draw.rect(screen, colors['Lime'],
+                         (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         # Отрисовка рамки выбранного юнита
         pg.draw.polygon(screen, colors['Yellow'], [
             (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 3),
@@ -783,25 +795,23 @@ def menu(screen: pg.Surface) -> str:
                 mouse_x, mouse_y = event.pos
             if event.type == pg.QUIT:
                 sys.exit()
-            if event.type == pg.KEYDOWN:
-                keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if (580 < mouse_x < 900) \
                         and (355 < mouse_y < 465):  # Нажатие кнопки ИГРАТЬ
                     return 'game'
-                elif (580 < mouse_x < 900) \
+                if (580 < mouse_x < 900) \
                         and (480 < mouse_y < 585):  # Нажатие кнопки ПРАВИЛА
                     return 'how_to_play'
-                elif (580 < mouse_x < 900) \
+                if (580 < mouse_x < 900) \
                         and (595 < mouse_y < 705):  # Нажатие кнопки АВТОРЫ
                     return 'authors'
-                elif (580 < mouse_x < 900) \
+                if (580 < mouse_x < 900) \
                         and (715 < mouse_y < 825):  # Нажатие кнопки ВЫХОД
                     return 'quit'
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
-        screen.blit(background_img, background_img.get_rect(bottomright=(1500,980)))  # Отрисовка
+        screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
         menu_img = pg.image.load('background/main_menu1500x980.png')  # Загрузка картинки
         screen.blit(menu_img, menu_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
@@ -811,14 +821,13 @@ def menu(screen: pg.Surface) -> str:
 
 
 def authors(screen: pg.Surface):
+    """Экран авторов проекта"""
     while True:
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
             if event.type == pg.QUIT:
                 sys.exit()
-            if event.type == pg.KEYDOWN:
-                keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if (580 < mouse_x < 900) \
@@ -827,7 +836,7 @@ def authors(screen: pg.Surface):
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
         screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
-        athers_img = pg.image.load('background/athers1500x980.png')  # Загрузка картинки
+        athers_img = pg.image.load('background/authors1500x980.png')  # Загрузка картинки
         screen.blit(athers_img, athers_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
@@ -836,14 +845,13 @@ def authors(screen: pg.Surface):
 
 
 def game_over(screen: pg.Surface, text: str):
+    """Экран конца игры"""
     while True:
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
             if event.type == pg.QUIT:
                 sys.exit()
-            if event.type == pg.KEYDOWN:
-                keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if (580 < mouse_x < 900) \
@@ -852,9 +860,13 @@ def game_over(screen: pg.Surface, text: str):
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
         screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
-        if (text == '1'): game_over = pg.image.load('background/game_over_1_1500x980.png')  # Загрузка картинки 1
-        else: game_over = pg.image.load('background/game_over_2_1500x980.png')  # Загрузка картинки 2
-        screen.blit(game_over, game_over.get_rect(bottomright=(1500, 980)))  # Отрисовка
+        if text == '1':
+            # Загрузка картинки 1
+            game_over_img = pg.image.load('background/game_over_1_1500x980.png')
+        else:
+            # Загрузка картинки 2
+            game_over_img = pg.image.load('background/game_over_2_1500x980.png')
+        screen.blit(game_over_img, game_over_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
         pg.display.flip()
@@ -862,14 +874,13 @@ def game_over(screen: pg.Surface, text: str):
 
 
 def how_to_play(screen: pg.Surface):
+    """Экран как играть"""
     while True:
         for event in pg.event.get():
             if event.type == pg.MOUSEMOTION:
                 mouse_x, mouse_y = event.pos
             if event.type == pg.QUIT:
                 sys.exit()
-            if event.type == pg.KEYDOWN:
-                keys = pg.key.get_pressed()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if (627 < mouse_x < 870) \
@@ -878,7 +889,7 @@ def how_to_play(screen: pg.Surface):
 
         background_img = pg.image.load('background/background1500x980.png')  # Загрузка картинки
         screen.blit(background_img, background_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
-        rulles_img = pg.image.load('background/rulles1500x980.png')  # Загрузка картинки
+        rulles_img = pg.image.load('background/rules1500x980.png')  # Загрузка картинки
         screen.blit(rulles_img, rulles_img.get_rect(bottomright=(1500, 980)))  # Отрисовка
 
         # Подтверждение отрисовки и ожидание
