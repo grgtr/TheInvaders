@@ -889,6 +889,8 @@ def how_to_play(screen: pg.Surface):
 def main():
     """Главная функция кода"""
     pg.init()
+    mysound = pg.mixer.Sound('music.wav')  # Загрузка трека
+    mysound.play(loops=10000000)
     screen = pg.display.set_mode((screen_size[0], screen_size[1]))
     command = menu(screen)
     while True:
