@@ -496,6 +496,7 @@ def game(screen: pg.Surface):
                                             return 'game_over_win1'
                                         if len(player1.units) == 0:
                                             return 'game_over_win2'
+                                    unit = player.units[0]
 
                     attack = False
                 elif not attack:

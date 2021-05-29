@@ -47,7 +47,7 @@ class Unit:
         elif self.title == 'elf':
             self.max_hp = 120  # Максимальное количество здоровья
             self.health = 120  # Здоровье
-            self.regen = 10
+            self.regen = 20
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
@@ -108,9 +108,12 @@ class Unit:
     def check(self) -> None:
         """Проверка на вшивость"""
         # Получен ли уровень
-        self.dmg = self.max_dmg * (self.health / self.max_hp)
-        if self.dmg < self.max_dmg * 7 / 10:
-            self.dmg = self.max_dmg * 7 / 10
+        if self.title == 'wizard':
+            pass
+        else:
+            self.dmg = self.max_dmg * (self.health / self.max_hp)
+            if self.dmg < self.max_dmg * 7 / 10:
+                self.dmg = self.max_dmg * 7 / 10
         if self.exp >= 100:
             self.lvl += 1
             self.exp -= 100
