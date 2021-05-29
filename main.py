@@ -414,8 +414,8 @@ def game(screen: pg.Surface):
                     unit.moves += 100
                 elif keys[pg.K_m]:
                     unit.moves += 100
-                if keys[pg.K_w]:
-                    print(7878)
+                # if keys[pg.K_w]:
+                #     print(7878)
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 try:
@@ -457,7 +457,7 @@ def game(screen: pg.Surface):
                                             return 'game_over_win2'
                                         hex_x, hex_y = point_in(attacker.coord_x, attacker.coord_y)
                                         if FIELD.field[hex_y][hex_x][0] == 'medieval':
-                                            print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
+                                            # print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             whose = whose_build(Building(hex_x, hex_y,
                                                                          FIELD.field[hex_y][hex_x][1]),
                                                                 player, enemy)
@@ -467,12 +467,12 @@ def game(screen: pg.Surface):
                                                     hex_x,
                                                     hex_y,
                                                     FIELD.field[hex_y][hex_x][1]))
-                                                print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
+                                                # print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             elif whose == -1:
                                                 pass
                                             else:
-                                                print(player.buildings)
-                                                print(enemy.buildings)
+                                                # print(player.buildings)
+                                                # print(enemy.buildings)
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
@@ -480,8 +480,8 @@ def game(screen: pg.Surface):
                                                 # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
                                                 enemy.buildings.pop(whose)
 
-                                            print(player.buildings)
-                                            print(enemy.buildings)
+                                            # print(player.buildings)
+                                            # print(enemy.buildings)
                                             player.refresh()
                                             player.money -= player.income
                                             enemy.refresh()
@@ -673,7 +673,7 @@ def game(screen: pg.Surface):
                                         unit.moves -= 1
                                         hex_x, hex_y = point_in(unit.coord_x, unit.coord_y)
                                         if FIELD.field[hex_y][hex_x][0] == 'medieval':
-                                            print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
+                                            # print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             whose = whose_build(Building(hex_x, hex_y,
                                                                          FIELD.field[hex_y][hex_x][1]),
                                                                 player, enemy)
@@ -687,8 +687,8 @@ def game(screen: pg.Surface):
                                             elif whose == -1:
                                                 pass
                                             else:
-                                                print(player.buildings)
-                                                print(enemy.buildings)
+                                                # print(player.buildings)
+                                                # print(enemy.buildings)
                                                 player.add_building(Building(
                                                     hex_x,
                                                     hex_y,
@@ -696,8 +696,8 @@ def game(screen: pg.Surface):
                                                 # print(hex_x, hex_y, field.field[hex_y][hex_x][1])
                                                 enemy.buildings.pop(whose)
 
-                                            print(player.buildings)
-                                            print(enemy.buildings)
+                                            # print(player.buildings)
+                                            # print(enemy.buildings)
                                             player.refresh()
                                             player.money -= player.income
                                             enemy.refresh()
