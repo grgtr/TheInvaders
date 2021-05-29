@@ -118,8 +118,7 @@ class Field:
         self.gen_building((1, 5), (2, 6), 'medieval', 2, 1)
         self.gen_building((6, 10), (2, 6), 'medieval', 2, 1)
         self.gen_building((1, 10), (2, 11), 'medieval', 3, 1)
-        self.gen_building((1, 5), (2, 11), 'medieval', 4, 1)
-        self.gen_building((6, 10), (2, 11), 'medieval', 4, 1)
+        self.gen_building((1, 10), (2, 11), 'medieval', 4, 1)
         self.gen_building((1, 5), (2, 6), 'medieval', 5, 1)
         self.gen_building((6, 10), (2, 6), 'medieval', 5, 1)
         self.gen_building((1, 10), (2, 11), 'medieval', 6, 1)
@@ -132,7 +131,10 @@ class Field:
         self.gen_building((6, 10), (2, 6), 'medieval', 10, 1)
         self.gen_building((1, 10), (2, 13), 'medieval', 11, 2)
         self.gen_building((11, 13), (2, 12), 'medieval', 12, 1)
+        self.gen_building((11, 13), (2, 12), 'medieval', 12, 1)
         self.gen_building((12, 13), (2, 12), 'medieval', 13, 1)
+        self.gen_building((12, 13), (2, 12), 'medieval', 13, 1)
+        self.gen_building((12, 13), (2, 12), 'medieval', 14, 1)
         self.gen_building((12, 13), (2, 12), 'medieval', 14, 1)
 
     def generate(self) -> None:

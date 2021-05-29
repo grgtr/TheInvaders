@@ -522,19 +522,22 @@ def game(screen: pg.Surface):
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 1:
                                     pass
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 2:  # Кузница
-                                    if player.money >= 50:
+                                    if player.money >= 35:
                                         if player.step_forge + 2 <= MOVE_COUNTER:
                                             unit.moves = 0
                                             unit.max_dmg += 5
-                                            player.money -= 50
+                                            player.money -= 35
                                             player.step_forge = MOVE_COUNTER
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 3:
                                     if player.money >= 10:
                                         if player.chet_step + 1 <= MOVE_COUNTER:
-                                            if unit.health - 10 <= unit.max_hp:
+                                            if unit.health <= unit.max_hp:
                                                 unit.health += 30
+                                                if unit.health > unit.max_hp:
+                                                    unit.health = unit.max_hp
                                                 player.money -= 10
                                                 unit.moves -= 1
+
                                             player.chet_step = MOVE_COUNTER
                                             if player.treasure_map == 0:
                                                 # print('treasure_map++')
@@ -543,12 +546,12 @@ def game(screen: pg.Surface):
                                     if player.treasure_map == 1:
                                         player.money += 250
                                         player.treasure_map = -1
-
+                                        unit.moves = 0
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 5:
                                     pass
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 6:
                                     if player.money >= 250:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('knight',
@@ -556,7 +559,7 @@ def game(screen: pg.Surface):
                                         player.money -= 250
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 7:
                                     if player.money >= 250:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('knight',
@@ -564,52 +567,52 @@ def game(screen: pg.Surface):
                                         player.money -= 250
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 8:
                                     if player.money >= 250:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('elf',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 200
+                                        player.money -= 250
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 9:
-                                    if player.money >= 200:
-                                        unit.moves -= 1
+                                    if player.money >= 250:
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('elf',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 200
+                                        player.money -= 250
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 10:
                                     if player.money >= 250:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('knight',
                                                  coord_x, coord_y, screen_size, field_size))
                                         player.money -= 250
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 11:
-                                    if player.big_treasure == 0:
+                                    if player.big_treasure < 2:
                                         unit.moves = 0
                                         unit.max_dmg += 15
                                         player.money += 250
-                                        player.big_treasure = -1
+                                        player.big_treasure += 1
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 12:
                                     pass
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 13:
                                     if player.money >= 300:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('wizard',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 100
+                                        player.money -= 300
                                 elif FIELD.field[unit_hex_y][unit_hex_x][1] == 14:
                                     if player.money >= 250:
-                                        unit.moves -= 1
+                                        unit.moves = 0
                                         coord_x, coord_y = center_hex(unit_hex_x, unit_hex_y)
                                         player.add_unit(
                                             Unit('elf',
                                                  coord_x, coord_y, screen_size, field_size))
-                                        player.money -= 200
+                                        player.money -= 250
 
                     # Нажатие на кнопку переключения юнита
                     elif (mouse_x - 1330) ** 2 + (mouse_y - 817) ** 2 < 57 ** 2:
@@ -662,7 +665,8 @@ def game(screen: pg.Surface):
                                                   unit_hex_y_edited,
                                                   player.units) and not any_on(unit_hex_x_edited,
                                                                                unit_hex_y_edited,
-                                                                               enemy.units):
+                                                                               enemy.units)\
+                                            and FIELD.field[unit_hex_y_edited][unit_hex_x_edited][0] != 'water':
                                         unit.coord_x = coord_x
                                         unit.coord_y = coord_y
                                         unit.moves -= 1
@@ -725,33 +729,33 @@ def game(screen: pg.Surface):
         for i in player.buildings:
             cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
             pg.draw.polygon(screen, colors['LightBlue'], [
-                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 2),
                 (cor_x, cor_y - hex_size[1] // 2 - 3),
-                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
-                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
-                (cor_x, cor_y + hex_size[1] // 2 - 4),
-                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 2),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 2),
+                (cor_x, cor_y + hex_size[1] // 2 - 1),
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 2),
             ], 3)
 
         for i in enemy.buildings:
             cor_x, cor_y = center_hex(i.hex_x, i.hex_y)
             pg.draw.polygon(screen, colors['Salmon'], [
-                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
+                (cor_x - hex_size[0] // 2, cor_y - hex_size[1] // 4 - 2),
                 (cor_x, cor_y - hex_size[1] // 2 - 4),
-                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 3),
-                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
-                (cor_x, cor_y + hex_size[1] // 2 - 4),
-                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 3),
+                (cor_x + hex_size[0] // 2, cor_y - hex_size[1] // 4 - 2),
+                (cor_x + hex_size[0] // 2, cor_y + hex_size[1] // 4 - 2),
+                (cor_x, cor_y + hex_size[1] // 2 - 1),
+                (cor_x - hex_size[0] // 2, cor_y + hex_size[1] // 4 - 2),
             ], 3)
 
         for i in player1.units:
             pg.draw.polygon(screen, tmp_col[0], [
-                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
-                (i.coord_x, i.coord_y - hex_size[1] // 2 - 3),
-                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
-                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
-                (i.coord_x, i.coord_y + hex_size[1] // 2 - 4),
-                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 1 ),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 1),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 1),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 2),
+                (i.coord_x, i.coord_y + hex_size[1] // 2 - 3),
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 2),
             ], 3)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
@@ -760,12 +764,12 @@ def game(screen: pg.Surface):
                          (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         for i in player2.units:
             pg.draw.polygon(screen, tmp_col[1], [
-                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
-                (i.coord_x, i.coord_y - hex_size[1] // 2 - 3),
-                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 3),
-                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+                (i.coord_x - hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 1),
+                (i.coord_x, i.coord_y - hex_size[1] // 2 - 1),
+                (i.coord_x + hex_size[0] // 2, i.coord_y - hex_size[1] // 4 - 1),
+                (i.coord_x + hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 2),
                 (i.coord_x, i.coord_y + hex_size[1] // 2 - 3),
-                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 3),
+                (i.coord_x - hex_size[0] // 2, i.coord_y + hex_size[1] // 4 - 2),
             ], 3)
             # Рамка здоровья
             pg.draw.rect(screen, colors['Black'], (i.coord_x - 26, i.coord_y + 39, 52, 8), 2)
@@ -774,12 +778,12 @@ def game(screen: pg.Surface):
                          (i.coord_x - 25, i.coord_y + 40, 50 / i.max_hp * i.health, 6), 0)
         # Отрисовка рамки выбранного юнита
         pg.draw.polygon(screen, colors['Yellow'], [
-            (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 3),
-            (unit.coord_x, unit.coord_y - hex_size[1] // 2 - 3),
-            (unit.coord_x + hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 3),
-            (unit.coord_x + hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 3),
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 1),
+            (unit.coord_x, unit.coord_y - hex_size[1] // 2 - 1),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y - hex_size[1] // 4 - 1),
+            (unit.coord_x + hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 2),
             (unit.coord_x, unit.coord_y + hex_size[1] // 2 - 3),
-            (unit.coord_x - hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 3),
+            (unit.coord_x - hex_size[0] // 2, unit.coord_y + hex_size[1] // 4 - 2),
         ], 3)
 
         # Подтверждение отрисовки и ожидание

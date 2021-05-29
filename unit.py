@@ -35,7 +35,7 @@ class Unit:
         elif self.title == 'wizard':
             self.max_hp = 90  # Максимальное количество здоровья
             self.health = 90  # Здоровье
-            self.regen = 15
+            self.regen = 10
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_dmg = 80
@@ -46,8 +46,8 @@ class Unit:
             self.image = pg.image.load('units/wizard/standing/standing_04.png')  # Картинка мага
         elif self.title == 'elf':
             self.max_hp = 120  # Максимальное количество здоровья
-            self.health = 100  # Здоровье
-            self.regen = 15
+            self.health = 120  # Здоровье
+            self.regen = 10
             self.lvl = 1  # Уровень
             self.exp = 0  # Опыт
             self.max_mana = 0  # Максимальное количество маны
@@ -71,11 +71,13 @@ class Unit:
     def refresh(self) -> None:
         """Обновление перед ходом"""
         # Регенерация
-        if (self.health != self.max_hp) and ((self.health + self.regen) <= self.max_hp):
-            self.health += self.regen
-        elif (self.health + self.regen) > self.max_hp:
+        self.health += self.regen
+        if self.health > self.max_hp:
             self.health = self.max_hp
-        self.mana = self.max_mana  # Восстановление маны
+        if self.moves == self.max_moves:
+            self.health += self.regen
+            if self.health > self.max_hp:
+                self.health = self.max_hp
         self.moves = self.max_moves  # Восстановление очков перемещения
 
     def attack(self, enemy) -> None:
@@ -107,6 +109,8 @@ class Unit:
         """Проверка на вшивость"""
         # Получен ли уровень
         self.dmg = self.max_dmg * (self.health / self.max_hp)
+        if self.dmg < self.max_dmg * 7 / 10:
+            self.dmg = self.max_dmg * 7 / 10
         if self.exp >= 100:
             self.lvl += 1
             self.exp -= 100
