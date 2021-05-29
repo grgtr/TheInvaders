@@ -683,7 +683,7 @@ def game(screen: pg.Surface):
                                                     hex_x,
                                                     hex_y,
                                                     FIELD.field[hex_y][hex_x][1]))
-                                                print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
+                                                # print(hex_x, hex_y, FIELD.field[hex_y][hex_x][1])
                                             elif whose == -1:
                                                 pass
                                             else:
